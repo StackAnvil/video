@@ -1,6 +1,6 @@
 import { Composition } from "remotion";
 import { Showcase } from "./Showcase";
-import { FPS } from "./config";
+import { FPS, type Edition } from "./config";
 import { duration, emptyProduction } from "./production";
 import "@fontsource/anton";
 import "@fontsource-variable/space-grotesk";
@@ -8,22 +8,29 @@ import "@fontsource-variable/space-grotesk";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
-      <Composition
-        id="StackAnvilShowcase"
-        component={Showcase}
-        fps={FPS}
-        width={1920}
-        height={1080}
-        durationInFrames={duration(emptyProduction)}
-        defaultProps={{
-          production: emptyProduction,
-          captions: true,
-          draft: true,
-        }}
-        calculateMetadata={({ props }) => ({
-          durationInFrames: duration(props.production),
-        })}
-      />
+      {(["landscape", "vertical"] as const).map((edition: Edition) => (
+        <Composition
+          key={edition}
+          id={
+            edition === "landscape" ? "StackAnvilShowcase" : "StackAnvilShort"
+          }
+          component={Showcase}
+          fps={FPS}
+          width={edition === "landscape" ? 1920 : 1080}
+          height={edition === "landscape" ? 1080 : 1920}
+          durationInFrames={duration(emptyProduction, edition)}
+          defaultProps={{
+            production: emptyProduction,
+            captions: true,
+            draft: true,
+            edition,
+          }}
+          calculateMetadata={({ props }) => ({
+            durationInFrames: duration(props.production, edition),
+            props: { ...props, edition },
+          })}
+        />
+      ))}
     </>
   );
 };

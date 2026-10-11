@@ -6,7 +6,13 @@ import {
   selectComposition,
 } from "@remotion/renderer";
 import type { Caption } from "@remotion/captions";
-import { FPS, scenes, VOICE_DELAY } from "../src/config";
+import {
+  FPS,
+  scenes,
+  shortScenes,
+  VOICE_DELAY,
+  type Edition,
+} from "../src/config";
 import {
   chapters,
   readiness,
@@ -19,9 +25,9 @@ import { music } from "./music";
 import { masterAudio } from "./master-audio";
 import { voiceover } from "./voiceover";
 
-async function verify() {
+async function verify(edition: Edition = "landscape") {
   const production = await load();
-  const failures = readiness(production);
+  const failures = readiness(production, edition);
   const assets = [
     ...Object.values(production.clips),
     ...Object.values(production.voices),
@@ -46,7 +52,9 @@ async function verify() {
 async function footage(args: string[]) {
   const [id, source, startText, secondsText, ...provenance] = args;
   if (
-    !scenes.some((scene) => "clip" in scene && scene.clip === id) ||
+    ![...scenes, ...shortScenes].some(
+      (scene) => "clip" in scene && scene.clip === id,
+    ) ||
     !source ||
     !provenance.length
   )
@@ -111,39 +119,60 @@ async function footage(args: string[]) {
   );
 }
 
-async function exportSubtitles(production: VideoProps["production"]) {
-  const captions: Caption[] = timeline(production).flatMap(({ scene, start }) =>
-    (production.voices[scene.id]?.captions ?? []).map((caption) => ({
-      ...caption,
-      startMs: caption.startMs + ((start + VOICE_DELAY) / FPS) * 1000,
-      endMs: caption.endMs + ((start + VOICE_DELAY) / FPS) * 1000,
-    })),
+async function exportSubtitles(
+  production: VideoProps["production"],
+  edition: Edition,
+) {
+  const prefix = edition === "vertical" ? "showcase-vertical" : "showcase";
+  const captions: Caption[] = timeline(production, edition).flatMap(
+    ({ scene, start }) =>
+      (production.voices[scene.id]?.captions ?? []).map((caption) => ({
+        ...caption,
+        startMs: caption.startMs + ((start + VOICE_DELAY) / FPS) * 1000,
+        endMs: caption.endMs + ((start + VOICE_DELAY) / FPS) * 1000,
+      })),
   );
-  await Bun.write(resolve(root, "out/showcase.srt"), subtitles(captions));
-  await Bun.write(resolve(root, "out/showcase.vtt"), subtitles(captions, true));
+  await Bun.write(resolve(root, `out/${prefix}.srt`), subtitles(captions));
   await Bun.write(
-    resolve(root, "out/showcase.captions.json"),
+    resolve(root, `out/${prefix}.vtt`),
+    subtitles(captions, true),
+  );
+  await Bun.write(
+    resolve(root, `out/${prefix}.captions.json`),
     JSON.stringify(captions, null, 2),
   );
-  const chapterText = chapters(production)
+  const coverageText =
+    edition === "landscape"
+      ? "Real Java-client footage from Galaxite and a local Bedrock Dedicated Server with controlled test packs. Browse server menus, inventories, native characters, emotes, friends and Realms. Realms coverage shows menus, without claiming a successful Realm join."
+      : "A real Java client in Galaxite's Bedrock lobby, showing server characters, authored menus and emotes. The full showcase also covers custom blocks, inventories, Character Creator, Friends, Realms menus and the testing lab.";
+  const chapterText = chapters(production, edition)
     .map(
       ({ scene, seconds }) =>
         `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")} ${scene.title.replace(/\n/g, " ")}`,
     )
     .join("\n");
   await Bun.write(
-    resolve(root, "out/youtube-description.txt"),
-    `Minecraft Java Edition on a Bedrock server | StackAnvil showcase\n\nRecorded gameplay from a Fabric Java client with ViaFabricPlus and the StackAnvil Bedrock add-on, connected to a local Bedrock 1.26.51.1 server. The featured-server segment demonstrates browsing and server details.\n\nBuilds and player guide: https://github.com/StackAnvil/patches\n\n${chapterText}\n\nExperimental builds. Compatibility varies by server. Independent project, not an official Minecraft or ViaVersion release.\nAI narration: ElevenLabs, calm delivery. Original music: StackAnvil/video (CC0).\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
+    resolve(
+      root,
+      edition === "vertical"
+        ? "out/social-description.txt"
+        : "out/youtube-description.txt",
+    ),
+    `Minecraft Java Edition on Bedrock servers | StackAnvil in action\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/\nCurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nSource and builds: https://github.com/StackAnvil/patches\nDeveloper Javadocs: https://stackanvil-jd.pistonmaster.net/\nContributing: https://stackanvil.pistonmaster.net/contributing/\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\n${edition === "landscape" ? "The later section explains" : "The full showcase also explains"} BDS behavior packs, Geyser and Paper plugins, Boar, negative controls, automated tests, MITMProxy HTTPS captures, gameplay packet journals, native comparisons and live playtesting. These are different evidence sources, not a claim that every compatibility case passes.\n\nExperimental builds. Compatibility varies by server and game version. Independent project, not an official Minecraft or ViaVersion release. Upstream ViaBedrock and ViaFabricPlus make this work possible.\nAI narration: Eleven v4 with ElevenLabs Liam, calm delivery. Script rewrite: Claude Opus 5.5 at high effort through Claude CLI. Music: ${production.music?.license ?? "No music supplied"}. AI assistance is used for research, implementation and analysis; behavior is checked against native evidence and tests.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
 }
 
-async function render(mode: "preview" | "render" | "inspect") {
-  if (mode === "render") await verify();
+async function render(
+  mode: "preview" | "render" | "inspect",
+  edition: Edition,
+) {
+  if (mode === "render") await verify(edition);
   const production = await load();
   const inputProps: VideoProps = {
     production,
     captions: true,
     draft: mode !== "render",
+    edition,
   };
   await directory("out/review");
   const serveUrl = await bundle({
@@ -152,11 +181,11 @@ async function render(mode: "preview" | "render" | "inspect") {
   });
   const composition = await selectComposition({
     serveUrl,
-    id: "StackAnvilShowcase",
+    id: edition === "vertical" ? "StackAnvilShort" : "StackAnvilShowcase",
     inputProps,
   });
   if (mode === "inspect") {
-    for (const { scene, start, frames } of timeline(production)) {
+    for (const { scene, start, frames } of timeline(production, edition)) {
       for (const [label, frame] of [
         ["start", start + 1],
         ["middle", start + Math.floor(frames / 2)],
@@ -176,14 +205,19 @@ async function render(mode: "preview" | "render" | "inspect") {
       composition,
       inputProps: { ...inputProps, draft: false, captions: false },
       frame: 90,
-      output: resolve(root, "out/thumbnail.png"),
+      output: resolve(
+        root,
+        edition === "vertical"
+          ? "out/thumbnail-vertical.png"
+          : "out/thumbnail.png",
+      ),
     });
     console.log("Scene and transition frames: out/review");
   } else {
     let last = -1;
     const outputLocation = resolve(
       root,
-      mode === "preview" ? "out/showcase-preview.mp4" : "out/showcase.mp4",
+      `out/showcase${edition === "vertical" ? "-vertical" : ""}${mode === "preview" ? "-preview" : ""}.mp4`,
     );
     await renderMedia({
       serveUrl,
@@ -206,16 +240,17 @@ async function render(mode: "preview" | "render" | "inspect") {
       },
     });
     await masterAudio(outputLocation);
-    await exportSubtitles(production);
+    await exportSubtitles(production, edition);
   }
 }
 
 async function main() {
   const [command, ...args] = Bun.argv.slice(2);
-  if (command === "music") return music();
-  if (command === "voiceover") return voiceover(args[0]);
+  const edition: Edition = args[0] === "vertical" ? "vertical" : "landscape";
+  if (command === "music") return music(args[0]);
+  if (command === "voiceover") return voiceover(args[0], args[1]);
   if (command === "footage") return footage(args);
-  if (command === "verify") return verify();
+  if (command === "verify") return verify(edition);
   if (command === "review") {
     const production = await load();
     const clip = production.clips[args[0]];
@@ -228,13 +263,18 @@ async function main() {
     return;
   }
   if (command === "preview" || command === "render" || command === "inspect")
-    return render(command);
+    return render(command, edition);
   if (command === "studio") {
     await directory(".cache");
     const path = resolve(root, ".cache/studio-props.json");
     await Bun.write(
       path,
-      JSON.stringify({ production: await load(), captions: true, draft: true }),
+      JSON.stringify({
+        production: await load(),
+        captions: true,
+        draft: true,
+        edition,
+      }),
     );
     const child = Bun.spawn(
       [

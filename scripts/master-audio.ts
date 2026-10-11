@@ -2,7 +2,8 @@ import { rename } from "node:fs/promises";
 import { run } from "./io";
 
 export async function masterAudio(path: string) {
-  const target = "loudnorm=I=-16:TP=-1.5:LRA=11";
+  // Leave headroom for true-peak overshoot during AAC encoding.
+  const target = "loudnorm=I=-16:TP=-1.8:LRA=11";
   const analysis = Bun.spawn(
     [
       "ffmpeg",
@@ -69,5 +70,5 @@ export async function masterAudio(path: string) {
     temporary,
   ]);
   await rename(temporary, path);
-  console.log("Audio mastered: -16 LUFS target, -1.5 dBTP ceiling");
+  console.log("Audio mastered: -16 LUFS target, AAC peak headroom");
 }

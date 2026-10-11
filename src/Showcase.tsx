@@ -12,17 +12,16 @@ import {
 } from "remotion";
 import { brand } from "./brand";
 import { Captions } from "./components/Captions";
-import { FPS, TRANSITION, VOICE_DELAY } from "./config";
+import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "./config";
 import { timeline, type VideoProps } from "./production";
 import { Gameplay } from "./scenes/Gameplay";
-import { Intro } from "./scenes/Intro";
+import { Information } from "./scenes/Information";
 import { Outro } from "./scenes/Outro";
-import { Routes } from "./scenes/Routes";
 
-export function Showcase({ production, captions, draft }: VideoProps) {
+export function Showcase({ production, captions, draft, edition }: VideoProps) {
   const frame = useCurrentFrame();
   const { durationInFrames } = useVideoConfig();
-  const entries = timeline(production);
+  const entries = timeline(production, edition);
   return (
     <AbsoluteFill
       style={{
@@ -41,32 +40,25 @@ export function Showcase({ production, captions, draft }: VideoProps) {
               />
             )}
             <TransitionSeries.Sequence durationInFrames={frames}>
-              {scene.kind === "intro" ? (
-                <Intro clip={production.clips[scene.clip]} />
-              ) : scene.kind === "routes" ? (
-                <Routes />
+              {scene.kind === "footage" ? (
+                <Gameplay clip={production.clips[scene.clip]} scene={scene} />
               ) : scene.kind === "outro" ? (
                 <Outro />
               ) : (
-                <Gameplay
-                  clip={production.clips[scene.clip]}
-                  name={scene.clip}
-                  title={scene.title}
-                  label={scene.label}
-                />
+                <Information scene={scene} />
               )}
             </TransitionSeries.Sequence>
           </Fragment>
         ))}
       </TransitionSeries>
-      {entries.map(({ scene, start, frames }) => {
+      {entries.map(({ scene, start }) => {
         const voice = production.voices[scene.id];
         return (
           voice && (
             <Sequence
               key={scene.id}
               from={start + VOICE_DELAY}
-              durationInFrames={frames - VOICE_DELAY - TRANSITION}
+              durationInFrames={Math.ceil(voice.duration * FPS) + VOICE_TAIL}
               layout="none"
             >
               <Audio src={staticFile(voice.file)} />
@@ -79,21 +71,28 @@ export function Showcase({ production, captions, draft }: VideoProps) {
         <Audio
           src={staticFile(production.music.file)}
           volume={(f) => {
-            const speaking = entries.some(({ scene, start }) => {
+            const duck = entries.reduce((gain, { scene, start }) => {
               const voice = production.voices[scene.id];
-              return (
-                voice &&
-                f >= start + VOICE_DELAY &&
-                f < start + VOICE_DELAY + voice.duration * FPS
+              if (!voice) return gain;
+              const from = start + VOICE_DELAY;
+              const end = from + voice.duration * FPS;
+              return Math.min(
+                gain,
+                interpolate(
+                  f,
+                  [from - 15, from, end, end + 24],
+                  [0.27, 0.14, 0.14, 0.27],
+                  { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+                ),
               );
-            });
+            }, 0.27);
             return (
               interpolate(
                 f,
-                [0, 30, durationInFrames - 45, durationInFrames - 1],
+                [0, 45, durationInFrames - 60, durationInFrames - 1],
                 [0, 1, 1, 0],
-                { extrapolateRight: "clamp" },
-              ) * (speaking ? 0.14 : 0.3)
+                { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
+              ) * duck
             );
           }}
         />

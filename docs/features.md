@@ -13,6 +13,8 @@ Each episode needs matching footage and evidence from its owning patch. This cat
 | Resource conversion           | Pack prompt, converted textures, custom geometry, cache reuse              | ViaBedrock and CubeConverter patch manifests                              |
 | Regular Java through ViaProxy | Proxy configuration, unmodified client join, gameplay                      | `site/getting-started.md` and ViaProxy patches                            |
 
+The expanded first showcase combines the live Galaxite lobby, authored menus, server characters and items, account menus, emotes, and controlled BDS probes. Its later section explains Geyser and Paper testing, Java plugin fixtures, Boar diagnostics, automated tests, negative controls, MITMProxy, packet journals, native comparisons, reverse engineering, and AI-assisted work. The portrait composition uses a separate script and selected action excerpts.
+
 Read `patches/<project>/series.json` for current filenames and order. A filename prefix alone does not identify its purpose. Verify the patch body and its `.pr.md` context.
 
 Record the server version, client build, connection route, and demonstrated action in the local manifest. Keep raw logs and recordings private. Use reviewed gameplay excerpts in the final video.

@@ -4,7 +4,8 @@ import { brand } from "../brand";
 
 export function Captions({ captions }: { captions: Caption[] }) {
   const frame = useCurrentFrame();
-  const { fps } = useVideoConfig();
+  const { fps, width, height } = useVideoConfig();
+  const vertical = height > width;
   const current = captions.find(
     (caption) =>
       caption.startMs <= (frame / fps) * 1000 &&
@@ -15,12 +16,12 @@ export function Captions({ captions }: { captions: Caption[] }) {
     <div
       style={{
         position: "absolute",
-        bottom: 66,
-        left: 150,
-        right: 150,
+        bottom: vertical ? 330 : 66,
+        left: vertical ? 64 : 150,
+        right: vertical ? 155 : 150,
         textAlign: "center",
         fontFamily: brand.body,
-        fontSize: 42,
+        fontSize: vertical ? 54 : 42,
         fontWeight: 600,
         lineHeight: 1.3,
       }}

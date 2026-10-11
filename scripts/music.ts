@@ -1,11 +1,16 @@
 import { duration } from "../src/production";
 import { FPS } from "../src/config";
-import { directory, hash, load, root, save } from "./io";
+import { directory, hash, load, mediaDuration, root, run, save } from "./io";
 import { resolve } from "node:path";
 
-export async function music() {
+export async function music(mode = process.env.STACKANVIL_MUSIC ?? "original") {
+  if (mode === "elevenlabs") return generatedMusic();
+  if (mode !== "original")
+    throw new Error("Choose original or elevenlabs music");
   const production = await load();
-  const seconds = Math.ceil(duration(production) / FPS + 3);
+  const seconds = Math.ceil(
+    Math.max(duration(production), duration(production, "vertical")) / FPS + 3,
+  );
   const rate = 44100;
   const count = rate * seconds;
   const buffer = Buffer.alloc(44 + count * 2);
@@ -65,4 +70,104 @@ export async function music() {
   };
   await save(production);
   console.log(`Original music: ${seconds}s`);
+}
+
+async function generatedMusic() {
+  const production = await load();
+  const seconds = Math.ceil(
+    Math.max(duration(production), duration(production, "vertical")) / FPS + 3,
+  );
+  const prompt =
+    "An original, understated warm electronic instrumental for a calm Minecraft technology walkthrough. Soft Rhodes and felt keys, muted synth bass, airy pads and light brushed percussion. Around 86 BPM with a relaxed humanized groove and occasional small fills. Slowly evolving harmony and instrumentation, generous space in the midrange for spoken narration. Gentle forward motion for the first three minutes, quieter and more spacious textures during the technical explanation after three and a half minutes, a warm restrained resolution in the final thirty seconds. No dramatic drops, no constant repeating arpeggio, no sound effects or jingles. No voices, singing, chants or spoken words.";
+  const request = {
+    model_id: "music_v2_5",
+    prompt,
+    music_length_ms: seconds * 1000,
+    force_instrumental: true,
+  };
+  await directory(".cache/music");
+  await directory("public/media/music");
+  const metadata = resolve(root, ".cache/music/elevenlabs.json");
+  const cache = resolve(root, ".cache/music/elevenlabs.mp3");
+  const signature = JSON.stringify(request);
+  if (
+    !(await Bun.file(cache).exists()) ||
+    !(await Bun.file(metadata).exists()) ||
+    (await Bun.file(metadata).json()).signature !== signature
+  ) {
+    const key = process.env.ELEVENLABS_API_KEY;
+    if (!key) throw new Error("Set ELEVENLABS_API_KEY to generate music");
+    const response = await fetch(
+      "https://api.elevenlabs.io/v1/music?output_format=auto",
+      {
+        method: "POST",
+        headers: { "xi-api-key": key, "Content-Type": "application/json" },
+        body: signature,
+        signal: AbortSignal.timeout(600000),
+      },
+    );
+    if (!response.ok)
+      throw new Error(`Eleven Music returned ${response.status}`);
+    await Bun.write(cache, await response.arrayBuffer());
+    await Bun.write(
+      metadata,
+      JSON.stringify({ signature, songId: response.headers.get("song-id") }),
+    );
+  }
+  const file = "media/music/stackanvil-elevenlabs.wav";
+  const path = resolve(root, "public", file);
+  const sourceDuration = await mediaDuration(cache);
+  const crossfade = 4;
+  const repeat = seconds - sourceDuration + 2 * crossfade;
+  const pivot = sourceDuration * 0.55;
+  if (sourceDuration < seconds) {
+    if (repeat >= pivot)
+      throw new Error("Generated music is too short for a clean phrase repeat");
+    await run([
+      "ffmpeg",
+      "-nostdin",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      cache,
+      "-filter_complex",
+      `[0:a]asplit=3[a][b][c];[a]atrim=end=${pivot},asetpts=PTS-STARTPTS[first];[b]atrim=start=${pivot - repeat}:end=${pivot},asetpts=PTS-STARTPTS[phrase];[c]atrim=start=${pivot},asetpts=PTS-STARTPTS[last];[first][phrase]acrossfade=d=${crossfade}:c1=qsin:c2=qsin[extended];[extended][last]acrossfade=d=${crossfade}:c1=qsin:c2=qsin,atrim=duration=${seconds}[music]`,
+      "-map",
+      "[music]",
+      "-ar",
+      "48000",
+      "-c:a",
+      "pcm_s16le",
+      path,
+    ]);
+    console.log(
+      `Repeated one middle phrase with crossfades: ${sourceDuration.toFixed(2)}s source → ${seconds}s edit`,
+    );
+  } else {
+    await run([
+      "ffmpeg",
+      "-nostdin",
+      "-y",
+      "-v",
+      "error",
+      "-i",
+      cache,
+      "-t",
+      String(seconds),
+      "-ar",
+      "48000",
+      "-c:a",
+      "pcm_s16le",
+      path,
+    ]);
+  }
+  production.music = {
+    file,
+    sha256: await hash(path),
+    duration: await mediaDuration(path),
+    license: "Generated with Eleven Music v2.5; ElevenLabs music terms apply",
+  };
+  await save(production);
+  console.log(`Eleven Music v2.5: ${production.music.duration}s`);
 }

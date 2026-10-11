@@ -1,59 +1,55 @@
-# First showcase production brief
+# Expanded showcase production brief
 
 ## Audience and goal
 
-Minecraft Java players want to see whether they can join Bedrock servers. The video demonstrates that connection and identifies the two installation paths.
+Show Minecraft Java players what a Bedrock server session looks like through StackAnvil. Give developers enough detail to understand how the bridge is tested and where to contribute.
 
-Lead with visible gameplay. Explain the client and server relationship after the opening. Show the add-on's menus in the real Java client.
+The maintainer requested a longer tour, natural movement, richer server content, and a separate portrait cut. Liam remains the narrator, with calm delivery. The script was rewritten with Claude CLI using Opus 5.5 and high effort, then checked against the feature sources and captures.
+
+## Gameplay direction
+
+Open in Galaxite's live lobby. Show server actors, resource-pack artwork, the game selector, inventory items, and emotes. Use gradual mouse turns, short walks toward something useful, pauses to inspect it, and deliberate menu choices. Keep the player grounded. Do not use flight as the opening demonstration.
+
+Use the local Bedrock resource probe for custom blocks. Use the behavior-pack chest fixture for inventory actions and server assertions. Label controlled worlds separately from live public servers.
+
+Browse saved characters and piece previews. Show Friends and Realm Hub menus. The account's available menus establish this demonstration. Do not imply an unavailable Realm join succeeded.
+
+Use real website and Javadoc captures. Include the CurseForge listing and matching release links. Keep screenshots of blocked pages out of the film.
+
+## Story and evidence
+
+`src/config.ts` contains the complete scene order, narration, duration floor, and evidence reference. Each required clip needs a provenance entry and review in the private production manifest.
+
+The later portion explains these routes:
+
+- Java input through ViaBedrock into BDS. Behavior packs prepare fixtures and inspect server state.
+- Java input through ViaBedrock and Geyser into Paper. Java plugins supply fixtures and assertions. Boar adds movement diagnostics.
+- Unit checks, integration cases, negative controls, recorded-scene replay, and live playtesting.
+- MITMProxy for HTTPS account and service traffic. Gameplay packet journals and packet inspection are separate.
+- Versioned protocol research, native-client comparisons, reverse engineering, AI assistance, and human review.
+
+A passing case establishes its measured behavior. It does not establish complete Bedrock parity. Keep failures and observation limits visible in research records.
+
+The parent guides are the primary sources: `docs/bedrock-test-packs.md`, `docs/capture-lab.md`, `docs/server-replay.md`, and `docs/bedrock-development-sources.md`. Add-on patch context documents establish the account menus, authored UI, native actors, and appearance features.
 
 ## Visual direction
 
-Use the StackAnvil site palette: forest `#15372d`, dark `#18231e`, paper `#f1f4f2`, mint `#c7e8d3`, and rust `#a75130`. Use Anton for short titles and Space Grotesk for captions and labels.
+Use forest `#15372d`, dark `#18231e`, paper `#f1f4f2`, mint `#c7e8d3`, and rust `#a75130`. Anton supplies short titles; Space Grotesk supplies labels and captions.
 
-The signature is “Java client. Bedrock server.” Show gameplay behind that statement. Keep menus legible in a large central frame. Use short crossfades and arrows that explain the connection path.
+Gameplay fills the landscape frame. Labels appear briefly and leave the action visible. Testing graphics trace the connection and evidence paths. Use short crossfades between scenes.
 
-## Storyboard
+The portrait cut uses a separate script and composition. Crop world footage around the action. Focus menu footage on its actual controls. Use the clip manifest's `portraitMenus` ranges when an overlay, such as the emote wheel, opens during a world shot. Leave room for captions and platform controls.
 
-| Scene            | Minimum duration | Required footage                               | Viewer takeaway                                        |
-| ---------------- | ---------------- | ---------------------------------------------- | ------------------------------------------------------ |
-| Opening          | 9 seconds        | Java player moving in a Bedrock world          | The cross-edition connection is real.                  |
-| Direct join      | 12 seconds       | Bedrock address, resource loading, world entry | The Fabric add-on connects directly.                   |
-| Creative catalog | 11 seconds       | Bedrock creative tab and server catalog        | The server supplies the catalog.                       |
-| Server browser   | 11 seconds       | Featured catalog and server details            | Bedrock discovery appears inside Java.                 |
-| Dressing Room    | 11 seconds       | Character or classic skin preview              | Bedrock characters appear inside Java.                 |
-| Connection paths | 12 seconds       | Animated diagram                               | ViaProxy and the Fabric add-on serve different setups. |
-| Closing          | 9 seconds        | Project address and compatibility note         | The player knows where to start.                       |
+## Audio and deliverables
 
-Narration can extend these durations. Each scene requires enough footage for its final duration. Do not loop a join or reverse gameplay to fill a gap.
+Use [Eleven v4](https://elevenlabs.io/docs/overview/models) with Liam through the [timestamped dialogue API](https://elevenlabs.io/docs/api-reference/text-to-dialogue/convert-with-timestamps). The current account supports 128 kbps MP3 output. Higher bitrates require a different subscription tier.
 
-## Claim sources
+Decode narration to WAV with an added quiet tail. Keep the entire measured audio duration and an extra timeline hold before the next transition. Caption boundaries come from character alignment. Audio tags do not appear in subtitles.
 
-These local StackAnvil sources were inspected on 2026-10-11. They reside in the parent patches repository.
+Use Eleven Music v2.5 for an understated instrumental. Keep its generation metadata private and record the applicable ElevenLabs terms in the manifest. A short track can use one middle phrase repeat with crossfades. The local CC0 score remains available for offline production.
 
-- Connections and compatibility: `site/index.md` and `site/getting-started.md`.
-- Creative catalog: `patches/viafabricplus-bedrock/upstreamable/0010-show-server-creative-items-in-a-bedrock-tab.pr.md`.
-- Featured browser: `patches/viafabricplus-bedrock/upstreamable/0015-add-featured-server-browser.patch`.
-- Dressing Room: `patches/viafabricplus-bedrock/upstreamable/0003-classic-dressing-room.pr.md`.
-- Character geometry: `patches/viafabricplus-bedrock/upstreamable/0006-render-character-creator-geometry-and-face-animations.pr.md`.
+Duck the music smoothly under narration. Keep gameplay silent. Apply two-pass normalization at -16 LUFS with a -1.5 dBTP ceiling, then check the encoded result.
 
-These sources establish implementation intent and documented verification. Matching footage establishes the visible demonstration. Recheck sources after a stack update.
+Deliver both MP4 cuts, burned captions, SRT and VTT files, thumbnails, and posting descriptions. Keep raw footage, account data, licensed pack exports, audio caches, and the local manifest private.
 
-## Audio and publication
-
-The first showcase uses calm technical narration. The opening samples compared calm and energetic delivery with the same script and ElevenLabs voice.
-
-The composition ducks the original music under speech. Gameplay audio remains muted. Character alignment determines subtitle timestamps. Do not use estimated word durations for publication.
-
-The export applies two-pass loudness normalization with a target of -16 LUFS and a true-peak ceiling of -1.5 dBTP. Check the encoded audio after mastering.
-
-Deliver a landscape 1080p video, thumbnail, SRT, VTT, JSON captions, and a YouTube description. Review the full render before uploading.
-
-The description combines short scenes so each chapter lasts at least ten seconds. See [YouTube's chapter requirements](https://support.google.com/youtube/answer/9884579?hl=en).
-
-The local world uses a matching Bedrock server. Label local demonstrations accurately. Public server support requires a separate captured join and gameplay demonstration on that server.
-
-## Reference
-
-- [ElevenLabs speech timing](https://elevenlabs.io/docs/api-reference/text-to-speech/convert-with-timestamps).
-- [Remotion video component](https://www.remotion.dev/docs/media/video).
-- [Minecraft usage guidelines](https://www.minecraft.net/en-us/usage-guidelines).
+Inspect each scene and its transitions. Review the complete exported videos before publication. Chapters must follow [YouTube's timing requirements](https://support.google.com/youtube/answer/9884579?hl=en). Uploading is a separate action.

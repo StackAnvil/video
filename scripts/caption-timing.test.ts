@@ -7,7 +7,7 @@ import {
   readiness,
   timeline,
 } from "../src/production";
-import { FPS, TRANSITION } from "../src/config";
+import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "../src/config";
 
 describe("production timing", () => {
   test("adjacent scenes overlap only by the transition duration", () => {
@@ -29,8 +29,52 @@ describe("production timing", () => {
       duration: 20,
       captions: [],
     };
-    expect(timeline(production)[0].frames).toBe(Math.ceil(21.6 * FPS));
+    expect(timeline(production)[0].frames).toBe(
+      20 * FPS + VOICE_DELAY + VOICE_TAIL + TRANSITION,
+    );
     expect(duration(production)).toBeGreaterThan(duration(emptyProduction));
+  });
+  test("every speech sequence retains its complete final frame and tail", () => {
+    const production = structuredClone(emptyProduction);
+    for (const { scene } of timeline(production)) {
+      production.voices[scene.id] = {
+        file: "",
+        sha256: "",
+        text: "",
+        duration: 25.013,
+        captions: [],
+      };
+    }
+    for (const entry of timeline(production)) {
+      const voiceEnd =
+        entry.start +
+        VOICE_DELAY +
+        Math.ceil(production.voices[entry.scene.id].duration * FPS) +
+        VOICE_TAIL;
+      expect(entry.start + entry.frames - TRANSITION).toBeGreaterThanOrEqual(
+        voiceEnd,
+      );
+    }
+  });
+  test("each edition uses only its own voices and extends independently", () => {
+    const production = structuredClone(emptyProduction);
+    const landscapeBefore = duration(production);
+    const shortBefore = duration(production, "vertical");
+    production.voices[timeline(production, "vertical")[0].scene.id] = {
+      file: "",
+      sha256: "",
+      text: "",
+      duration: 30.01,
+      captions: [],
+    };
+    expect(duration(production)).toBe(landscapeBefore);
+    expect(duration(production, "vertical")).toBeGreaterThan(shortBefore);
+    const selected = timeline(production, "vertical");
+    for (let i = 1; i < selected.length; i++) {
+      expect(selected[i].start).toBe(
+        selected[i - 1].start + selected[i - 1].frames - TRANSITION,
+      );
+    }
   });
   test("incomplete production cannot pass publication checks", () => {
     expect(readiness(emptyProduction).length).toBeGreaterThan(0);
