@@ -4,11 +4,11 @@
 
 Show Minecraft Java players how to explore Bedrock server content while they keep their Java client. Follow a player through real servers, appearance options, account menus, installation, and help.
 
-Use Claude CLI with Opus 5.5 at high effort to rewrite the narrative. Check every claim against the filmed action and current player guide. Liam guides the tour. Brian supplies the short fictional opening dialogue for the community skin cameo.
+Use Claude CLI with Opus 5.5 at high effort to rewrite the narrative. Check every claim against the filmed action and current player guide. Liam addresses experienced Minecraft players directly. Keep the narration concise and let the footage carry familiar actions.
 
 ## Story
 
-The opening shows a Java player whose friends picked a Bedrock server. Cut to a real Java session on CubeCraft Bedrock. Explore its game characters and authored selector, then enter the parkour area.
+Open with a real Java session on CubeCraft Bedrock. Address the viewer directly, explore the lobby and game selector, then play parkour. Do not explain familiar controls, NPCs, or inventories.
 
 Visit Galaxite next. Use fresh footage of its world, characters, game selector, items, and emotes. Show Character Creator, Friends, and Realm Hub menus as player features. Show no unavailable Realm joins.
 
@@ -22,9 +22,7 @@ Record real Java gameplay on the parent's private display with zero gameplay vol
 
 Give each main scene its own take or a distinct chronological excerpt. Avoid overlapping footage within the main cut. Use the short composition for selected excerpts from the same shoot.
 
-Keep account data private. Blur private identities in social menus. Record the server, client build, connection route, action, and capture date in the ignored production manifest. Review the full trimmed clip before marking it ready.
-
-The supplied skin is an exact local PNG asset. Render its pixel art as a community cameo illustration, separate from real gameplay. Label the dialogue as fictional. Do not use a recording or clone of the skin owner's voice.
+Keep credentials and account tokens private. The owner has approved showing the friends list without blurring names. Record the server, client build, connection route, action, and capture date in the ignored production manifest. Review the full trimmed clip before marking it ready.
 
 ## Layout
 
@@ -36,7 +34,7 @@ The portrait cut has a separate script. Keep menus fully visible within their fo
 
 ## Audio and exports
 
-Use Eleven v4 through the timestamped dialogue API. Select the voice per scene and include it in the cache signature. Keep a decoded quiet tail and a timeline hold after narration. Derive captions from measured alignment.
+Use Eleven v4 through the timestamped dialogue API. Use Liam and include the voice in the cache signature. Keep one second of decoded silence after the final aligned word, followed by the timeline hold. Derive captions from measured alignment.
 
 Use a licensed instrumental and duck it under speech. Keep generated assets and their provenance private. Master at -16 LUFS and check the encoded true peak against the -1.5 dBTP ceiling.
 

@@ -20,10 +20,7 @@ export async function voiceover(
   );
   if (!selected.length) throw new Error("Unknown narration scene");
   for (const scene of selected) {
-    const voiceId =
-      scene.voice === "brian"
-        ? (process.env.ELEVENLABS_CAMEO_VOICE_ID ?? "nPczCjzI2devNBz1zQrb")
-        : narratorVoice;
+    const voiceId = narratorVoice;
     const signature = JSON.stringify({
       text: scene.narration,
       style,
@@ -93,7 +90,9 @@ export async function voiceover(
       "-i",
       source,
       "-af",
-      "apad=pad_dur=0.5",
+      "apad=pad_dur=1",
+      "-t",
+      String((captions.at(-1)?.endMs ?? 0) / 1000 + 1),
       "-c:a",
       "pcm_s16le",
       path,

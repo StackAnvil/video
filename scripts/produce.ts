@@ -30,7 +30,6 @@ async function verify(edition: Edition = "landscape") {
   const failures = readiness(production, edition);
   const assets = [
     ...Object.values(production.clips),
-    ...Object.values(production.images ?? {}),
     ...Object.values(production.voices),
     ...(production.music ? [production.music] : []),
   ];
@@ -159,7 +158,7 @@ async function exportSubtitles(
         ? "out/social-description.txt"
         : "out/youtube-description.txt",
     ),
-    `Play Bedrock servers from Minecraft Java | StackAnvil\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nNeed help or found a bug? Please tell us.\nDiscord: https://discord.gg/F4ZyEtXXge\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your build and Minecraft versions, server, steps, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nExperimental builds. Compatibility varies by server and game version; some resource packs have rendering limitations. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nActed AI voices: ElevenLabs Liam (narrator) and Brian (fictional opening cameo), Eleven v4. The cameo dialogue is not a recording of the skin owner. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
+    `Play Bedrock servers from Minecraft Java | StackAnvil\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nNeed help or found a bug? Please tell us.\nDiscord: https://discord.gg/F4ZyEtXXge\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your build and Minecraft versions, server, steps, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nExperimental builds. Compatibility varies by server and game version; some resource packs have rendering limitations. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nAI narration: ElevenLabs Liam, Eleven v4. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
 }
 

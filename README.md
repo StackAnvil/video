@@ -15,7 +15,7 @@ bun install --frozen-lockfile
 cp .env.example .env
 ```
 
-Set `ELEVENLABS_API_KEY` in `.env`. Set `STACKANVIL_NARRATION` to `calm` or `energetic`. Liam narrates the tour; Brian plays the short fictional opening cameo. Narration uses Eleven v4 through the timestamped dialogue API. Use `ELEVENLABS_CAMEO_VOICE_ID` to choose a different cameo voice.
+Set `ELEVENLABS_API_KEY` in `.env`. Set `STACKANVIL_NARRATION` to `calm` or `energetic`. Liam narrates the tour. Narration uses Eleven v4 through the timestamped dialogue API.
 
 ```console
 bun run voiceover calm
