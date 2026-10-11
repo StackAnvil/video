@@ -7,10 +7,16 @@ import {
 } from "@remotion/renderer";
 import type { Caption } from "@remotion/captions";
 import { FPS, scenes, VOICE_DELAY } from "../src/config";
-import { readiness, timeline, type VideoProps } from "../src/production";
+import {
+  chapters,
+  readiness,
+  timeline,
+  type VideoProps,
+} from "../src/production";
 import { subtitles } from "./caption-timing";
 import { directory, hash, load, mediaDuration, root, run, save } from "./io";
 import { music } from "./music";
+import { masterAudio } from "./master-audio";
 import { voiceover } from "./voiceover";
 
 async function verify() {
@@ -119,15 +125,15 @@ async function exportSubtitles(production: VideoProps["production"]) {
     resolve(root, "out/showcase.captions.json"),
     JSON.stringify(captions, null, 2),
   );
-  const chapters = timeline(production)
+  const chapterText = chapters(production)
     .map(
-      ({ scene, start }) =>
-        `${String(Math.floor(start / FPS / 60)).padStart(2, "0")}:${String(Math.floor(start / FPS) % 60).padStart(2, "0")} ${scene.title.replace(/\n/g, " ")}`,
+      ({ scene, seconds }) =>
+        `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")} ${scene.title.replace(/\n/g, " ")}`,
     )
     .join("\n");
   await Bun.write(
     resolve(root, "out/youtube-description.txt"),
-    `Minecraft Java Edition on a Bedrock server | StackAnvil showcase\n\nRecorded gameplay from a Fabric Java client with ViaFabricPlus and the StackAnvil Bedrock add-on.\n\nBuilds and player guide: https://github.com/StackAnvil/patches\n\n${chapters}\n\nExperimental builds. Compatibility varies by server. Independent project, not an official Minecraft or ViaVersion release.\nAI narration: ElevenLabs. Original music: StackAnvil/video (CC0).\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
+    `Minecraft Java Edition on a Bedrock server | StackAnvil showcase\n\nRecorded gameplay from a Fabric Java client with ViaFabricPlus and the StackAnvil Bedrock add-on, connected to a local Bedrock 1.26.51.1 server. The featured-server segment demonstrates browsing and server details.\n\nBuilds and player guide: https://github.com/StackAnvil/patches\n\n${chapterText}\n\nExperimental builds. Compatibility varies by server. Independent project, not an official Minecraft or ViaVersion release.\nAI narration: ElevenLabs, calm delivery. Original music: StackAnvil/video (CC0).\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
 }
 
@@ -175,6 +181,10 @@ async function render(mode: "preview" | "render" | "inspect") {
     console.log("Scene and transition frames: out/review");
   } else {
     let last = -1;
+    const outputLocation = resolve(
+      root,
+      mode === "preview" ? "out/showcase-preview.mp4" : "out/showcase.mp4",
+    );
     await renderMedia({
       serveUrl,
       composition,
@@ -186,10 +196,7 @@ async function render(mode: "preview" | "render" | "inspect") {
       audioBitrate: "320k",
       concurrency: 4,
       scale: mode === "preview" ? 2 / 3 : 1,
-      outputLocation: resolve(
-        root,
-        mode === "preview" ? "out/showcase-preview.mp4" : "out/showcase.mp4",
-      ),
+      outputLocation,
       onProgress: ({ progress }) => {
         const bucket = Math.floor(progress * 10);
         if (bucket > last) {
@@ -198,6 +205,7 @@ async function render(mode: "preview" | "render" | "inspect") {
         }
       },
     });
+    await masterAudio(outputLocation);
     await exportSubtitles(production);
   }
 }

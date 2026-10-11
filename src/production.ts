@@ -44,6 +44,17 @@ export function duration(production: Production) {
   const last = timeline(production).at(-1)!;
   return last.start + last.frames;
 }
+export function chapters(production: Production) {
+  const end = Math.floor(duration(production) / FPS);
+  let previous = -10;
+  const entries = timeline(production).flatMap(({ scene, start }) => {
+    const seconds = Math.floor(start / FPS);
+    if (seconds - previous < 10 || end - seconds < 10) return [];
+    previous = seconds;
+    return [{ scene, seconds }];
+  });
+  return entries.length >= 3 ? entries : [];
+}
 export function readiness(production: Production) {
   const failures: string[] = [];
   for (const scene of scenes) {

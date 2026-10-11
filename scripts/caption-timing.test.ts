@@ -2,6 +2,7 @@ import { describe, expect, test } from "bun:test";
 import { alignedCaptions, subtitles } from "./caption-timing";
 import {
   duration,
+  chapters,
   emptyProduction,
   readiness,
   timeline,
@@ -33,6 +34,18 @@ describe("production timing", () => {
   });
   test("incomplete production cannot pass publication checks", () => {
     expect(readiness(emptyProduction).length).toBeGreaterThan(0);
+  });
+  test("rounded chapter timestamps leave at least ten seconds per chapter", () => {
+    const entries = chapters(emptyProduction);
+    expect(entries.length).toBeGreaterThanOrEqual(3);
+    expect(entries[0].seconds).toBe(0);
+    for (let i = 1; i < entries.length; i++)
+      expect(
+        entries[i].seconds - entries[i - 1].seconds,
+      ).toBeGreaterThanOrEqual(10);
+    expect(
+      Math.floor(duration(emptyProduction) / FPS) - entries.at(-1)!.seconds,
+    ).toBeGreaterThanOrEqual(10);
   });
 });
 
