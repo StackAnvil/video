@@ -1,7 +1,7 @@
 {
   "name": "Record movement after joining an owned Bedrock world",
   "steps": [
-    { "action": "mark", "label": "Showcase: Java gameplay on Bedrock" },
+    { "action": "mark", "label": "Showcase Java gameplay on Bedrock" },
     { "action": "videoStart", "name": "showcase-gameplay", "fps": 60 },
     { "action": "keyHold", "key": "w", "ms": 6000 },
     { "action": "keyHold", "key": "d", "ms": 4000 },
