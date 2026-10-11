@@ -123,9 +123,9 @@ export const scenes: Scene[] = [
   {
     id: "player-emote",
     seconds: 15,
-    title: "Your Bedrock emotes",
+    title: "Emotes · B by default",
     narration:
-      "Your Bedrock account comes with you, and so do its emotes. Which ones you can use depends on what that account owns.",
+      "Press B to open the emote wheel by default. Rebind it in Controls. Choose an emote from your Bedrock account.",
     label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
@@ -169,6 +169,19 @@ export const scenes: Scene[] = [
       "Recorded Realm list and Realm Hub world/settings menus; menus only",
     kind: "footage",
     clip: "realms",
+    framing: "menu",
+  },
+  {
+    id: "realm-community",
+    seconds: 22,
+    title: "Realm Community and Timeline",
+    label: "Economy SMP · Realm Hub",
+    narration:
+      "Community shows the Realm's recent events and posts, and Timeline charts weekly player activity, so you can catch up without leaving Java.",
+    evidence:
+      "Live Economy SMP Realm Hub: existing Community stories, Timeline weekly activity and week navigation; menus only",
+    kind: "footage",
+    clip: "realm-community",
     framing: "menu",
   },
   {
@@ -229,7 +242,7 @@ export const scenes: Scene[] = [
 export const shortScenes: Scene[] = [
   {
     id: "hook-short",
-    seconds: 10,
+    seconds: 9.1,
     title: "Bedrock servers from Java",
     narration:
       "You can join Bedrock servers from your Java client. This is Stack Anvil on CubeCraft's Bedrock network.",
@@ -242,7 +255,7 @@ export const shortScenes: Scene[] = [
   },
   {
     id: "galaxite-short",
-    seconds: 11,
+    seconds: 10,
     title: "Galaxite models and menus",
     narration:
       "On Galaxite, the custom models, the animations, and the server's own menus all show up.",
@@ -255,16 +268,29 @@ export const shortScenes: Scene[] = [
   },
   {
     id: "emote-short",
-    seconds: 10,
-    title: "Your emotes come along",
+    seconds: 8,
+    title: "Emotes · B by default",
     narration:
-      "Your Bedrock emotes come along too. Which ones you get depends on what your account owns.",
+      "Press B to open the emote wheel by default. Use the emotes your Bedrock account owns.",
     label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
     clip: "emote-short",
     framing: "world",
+  },
+  {
+    id: "realm-short",
+    seconds: 9,
+    title: "Realm Community and Timeline",
+    label: "Economy SMP · Realm Hub",
+    narration:
+      "Community shows the Realm's recent events and posts, and Timeline charts weekly player activity.",
+    evidence:
+      "Economy SMP Community stories and weekly player Timeline; menus only",
+    kind: "footage",
+    clip: "realm-short",
+    framing: "menu",
   },
   {
     id: "install-short",
@@ -278,7 +304,7 @@ export const shortScenes: Scene[] = [
   },
   {
     id: "help-short",
-    seconds: 11,
+    seconds: 10.6,
     title: "Try it and report bugs",
     narration:
       "The guide is at Stack Anvil dot pistonmaster dot net. It's experimental, so ask in Discord or report bugs on GitHub.",

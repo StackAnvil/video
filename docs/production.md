@@ -10,7 +10,7 @@ Use Claude CLI with Opus 5.5 at high effort to rewrite the narrative. Check ever
 
 Open with a real Java session on CubeCraft Bedrock. Address the viewer directly, explore the lobby and game selector, then play parkour. Do not explain familiar controls, NPCs, or inventories.
 
-Visit Galaxite next. Use fresh footage of its world, characters, game selector, items, and emotes. Show Character Creator, Friends, and Realm Hub menus as player features. Show no unavailable Realm joins.
+Visit Galaxite next. Use fresh footage of its world, characters, game selector, items, and emotes. Show Character Creator, Friends, and Realm Hub menus as player features. Show Economy SMP's Community story feed and weekly Timeline activity, including scrolling and week navigation. Show no unavailable Realm joins. Mention that B opens the emote wheel by default and that players can rebind it in Controls.
 
 End with the website, the CurseForge Fabric add-on, the matching ViaFabricPlus download, and the connection steps. Emphasize Discord for help and GitHub issues for bug reports.
 

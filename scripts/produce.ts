@@ -143,8 +143,8 @@ async function exportSubtitles(
   );
   const coverageText =
     edition === "landscape"
-      ? "Keep your Minecraft Java client and explore Bedrock server content. Real Java gameplay on CubeCraft Bedrock and Galaxite, with server menus, custom characters and items, emotes, Character Creator, Friends and Realms menus. Realms footage shows menus only."
-      : "Your Java client, Bedrock server content. A short look at CubeCraft Bedrock, Galaxite and emotes, with the Fabric mod download linked below.";
+      ? "Keep your Minecraft Java client and explore Bedrock server content. Real Java gameplay on CubeCraft Bedrock and Galaxite, with server menus, custom characters and items, emotes with the default B keybind, Character Creator, Friends and Realms menus, including Economy SMP Community stories and Timeline activity. Realms footage shows menus only."
+      : "Your Java client, Bedrock server content. A short look at CubeCraft Bedrock, Galaxite, emotes with the default B keybind, and Realm Community and Timeline menus, with the Fabric mod download linked below.";
   const chapterText = chapters(production, edition)
     .map(
       ({ scene, seconds }) =>
