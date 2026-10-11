@@ -30,6 +30,7 @@ async function verify(edition: Edition = "landscape") {
   const failures = readiness(production, edition);
   const assets = [
     ...Object.values(production.clips),
+    ...Object.values(production.images ?? {}),
     ...Object.values(production.voices),
     ...(production.music ? [production.music] : []),
   ];
@@ -143,8 +144,8 @@ async function exportSubtitles(
   );
   const coverageText =
     edition === "landscape"
-      ? "Real Java-client footage from Galaxite and a local Bedrock Dedicated Server with controlled test packs. Browse server menus, inventories, native characters, emotes, friends and Realms. Realms coverage shows menus, without claiming a successful Realm join."
-      : "A real Java client in Galaxite's Bedrock lobby, showing server characters, authored menus and emotes. The full showcase also covers custom blocks, inventories, Character Creator, Friends, Realms menus and the testing lab.";
+      ? "Keep your Minecraft Java client and explore Bedrock server content. Real Java gameplay on CubeCraft Bedrock and Galaxite, with server menus, custom characters and items, emotes, Character Creator, Friends and Realms menus. Realms footage shows menus only."
+      : "Your Java client, Bedrock server content. A short look at CubeCraft Bedrock, Galaxite and emotes, with the Fabric mod download linked below.";
   const chapterText = chapters(production, edition)
     .map(
       ({ scene, seconds }) =>
@@ -158,7 +159,7 @@ async function exportSubtitles(
         ? "out/social-description.txt"
         : "out/youtube-description.txt",
     ),
-    `Minecraft Java Edition on Bedrock servers | StackAnvil in action\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/\nCurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nSource and builds: https://github.com/StackAnvil/patches\nDeveloper Javadocs: https://stackanvil-jd.pistonmaster.net/\nContributing: https://stackanvil.pistonmaster.net/contributing/\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\n${edition === "landscape" ? "The later section explains" : "The full showcase also explains"} BDS behavior packs, Geyser and Paper plugins, Boar, negative controls, automated tests, MITMProxy HTTPS captures, gameplay packet journals, native comparisons and live playtesting. These are different evidence sources, not a claim that every compatibility case passes.\n\nExperimental builds. Compatibility varies by server and game version. Independent project, not an official Minecraft or ViaVersion release. Upstream ViaBedrock and ViaFabricPlus make this work possible.\nAI narration: Eleven v4 with ElevenLabs Liam, calm delivery. Script rewrite: Claude Opus 5.5 at high effort through Claude CLI. Music: ${production.music?.license ?? "No music supplied"}. AI assistance is used for research, implementation and analysis; behavior is checked against native evidence and tests.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
+    `Play Bedrock servers from Minecraft Java | StackAnvil\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nNeed help or found a bug? Please tell us.\nDiscord: https://discord.gg/F4ZyEtXXge\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your build and Minecraft versions, server, steps, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nExperimental builds. Compatibility varies by server and game version; some resource packs have rendering limitations. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nActed AI voices: ElevenLabs Liam (narrator) and Brian (fictional opening cameo), Eleven v4. The cameo dialogue is not a recording of the skin owner. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
 }
 
@@ -204,7 +205,10 @@ async function render(
       serveUrl,
       composition,
       inputProps: { ...inputProps, draft: false, captions: false },
-      frame: 90,
+      frame:
+        (timeline(production, edition).find(
+          ({ scene }) => scene.kind === "footage",
+        )?.start ?? 0) + 90,
       output: resolve(
         root,
         edition === "vertical"

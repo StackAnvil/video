@@ -13,7 +13,7 @@ Each episode needs matching footage and evidence from its owning patch. This cat
 | Resource conversion           | Pack prompt, converted textures, custom geometry, cache reuse              | ViaBedrock and CubeConverter patch manifests                              |
 | Regular Java through ViaProxy | Proxy configuration, unmodified client join, gameplay                      | `site/getting-started.md` and ViaProxy patches                            |
 
-The expanded first showcase combines the live Galaxite lobby, authored menus, server characters and items, account menus, emotes, and controlled BDS probes. Its later section explains Geyser and Paper testing, Java plugin fixtures, Boar diagnostics, automated tests, negative controls, MITMProxy, packet journals, native comparisons, reverse engineering, and AI-assisted work. The portrait composition uses a separate script and selected action excerpts.
+The player showcase visits CubeCraft Bedrock and Galaxite, then shows appearance, emotes, social menus, and Realms menus. Its ending explains the Fabric mod download and connection steps. Discord and GitHub issues are the bug reporting channels. Developer topics and controlled test worlds belong in separate episodes.
 
 Read `patches/<project>/series.json` for current filenames and order. A filename prefix alone does not identify its purpose. Verify the patch body and its `.pr.md` context.
 

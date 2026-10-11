@@ -10,365 +10,307 @@ interface SceneBase {
   label: string;
   narration: string;
   evidence: string;
+  voice?: "liam" | "brian";
 }
 export type Scene = SceneBase &
   (
-    | {
-        kind: "footage";
-        clip: string;
-        framing: "world" | "menu" | "web";
-        annotation?: { from: number; title: string; detail: string };
-      }
-    | {
-        kind:
-          | "routes"
-          | "testing"
-          | "traffic"
-          | "research"
-          | "downloads"
-          | "outro";
-      }
+    | { kind: "footage"; clip: string; framing: "world" | "menu" | "web" }
+    | { kind: "install" | "help" | "outro" | "cameo" }
   );
 export const scenes: Scene[] = [
   {
-    id: "intro",
-    kind: "footage",
-    clip: "lobby",
-    framing: "world",
+    id: "cameo",
+    seconds: 7,
+    title: "Friends picked Bedrock",
+    narration: "Wait, you're all on Bedrock now?",
+    label: "Community cameo \u00b7 acted dialogue",
+    evidence: "Supplied 64x64 community skin PNG; fictional dialogue",
+    kind: "cameo",
+    voice: "brian",
+  },
+  {
+    id: "hook",
     seconds: 11,
-    title: "Java inside a Bedrock lobby",
-    label: "Live Galaxite session · Java Edition 26.3",
+    title: "Keep your Java client",
     narration:
-      "This is a real Java client, live in Galaxite's Bedrock lobby. Let's look around.",
-    evidence: "Live Galaxite capture",
-  },
-  {
-    id: "lobby",
-    kind: "footage",
-    clip: "lobby-tour",
-    framing: "world",
-    seconds: 20,
-    title: "Walk into the server's world",
-    label: "ViaFabricPlus + StackAnvil Bedrock add-on",
-    narration:
-      "Stack Anvil builds on ViaFabricPlus and ViaBedrock, and much of this starts with their work. As we walk, Java is using the server's own resource packs. Some of that content still has rendering errors.",
-    evidence: "site/getting-started.md",
-  },
-  {
-    id: "actors",
-    kind: "footage",
-    clip: "actors",
-    framing: "world",
-    seconds: 20,
-    title: "Characters built for this server",
-    label: "Server geometry, textures, and animation",
-    narration:
-      "Watch these characters move. They're Galaxite's native characters, built from the server's own models, textures, and animation data. Stack Anvil brings supported Bedrock actors and player skins into the Java renderer.",
+      "You can join them from Java. This is Stack Anvil, live on CubeCraft's Bedrock server.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
     evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0002-native-entities-and-skins.pr.md",
+      "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "cube-hook",
+    framing: "world",
   },
   {
-    id: "forms",
-    kind: "footage",
-    clip: "forms",
-    framing: "menu",
-    seconds: 22,
-    title: "Galaxite's own menus",
-    label: "Server-authored UI · original button responses",
+    id: "cube-lobby",
+    seconds: 12,
+    title: "First stop: CubeCraft",
     narration:
-      "Here's Galaxite's game selector. The layout, artwork, labels, and buttons all come from the server's Bedrock UI definitions. Pick a game, and Java sends your choice straight back to the server as a form response.",
+      "CubeCraft has a Bedrock network with its own games and lobby. Take a look at those characters standing around. Each one is a different game.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
     evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0029-render-authored-bedrock-server-forms.pr.md",
+      "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "cube-lobby",
+    framing: "world",
   },
   {
-    id: "items",
+    id: "cube-menu",
+    seconds: 13,
+    title: "Pick something to play",
+    narration:
+      "Picking a game works the way you'd hope. Open the menu, hover, click. It's the server's own selector, and it shows up in Java like any other screen. Let's try this one.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
-    clip: "items",
+    clip: "cube-menu",
     framing: "menu",
+  },
+  {
+    id: "cube-play",
     seconds: 17,
-    title: "The server's items and artwork",
-    label: "Hotbar items, inventory icons, and held items",
+    title: "Try CubeCraft parkour",
     narration:
-      "Items use the same resource pack path. That custom art in the hotbar comes from Galaxite, and it carries through to the inventory and your hand.",
-    evidence: "docs/bedrock-test-packs.md",
-  },
-  {
-    id: "blocks",
+      "And we're in. Keyboard, mouse, your own keybinds, the hotbar habits you've had for years. Your hands already know what to do. I'm not chasing a win today. Just seeing what my friends keep talking about.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
-    clip: "blocks",
+    clip: "cube-play",
     framing: "world",
-    seconds: 18,
-    title: "Custom blocks in a controlled world",
-    label: "StackAnvil resource-probe behavior and resource packs",
-    annotation: {
-      from: 5,
-      title: "Intentional probe texture",
-      detail: "Source and converted pixels match",
-    },
-    narration:
-      "Over on a local Bedrock Dedicated Server, a small resource probe gives us a repeatable custom block. We can inspect it in the world and compare the converted texture with the source.",
-    evidence: "src/integration/resource-probe.ts",
   },
   {
-    id: "inventory",
+    id: "galaxite-lobby",
+    seconds: 14,
+    title: "Next stop: Galaxite",
+    narration:
+      "Then there's Galaxite. Totally different server, totally different look. No rush here. I like to just walk for a bit, look up, and get a feel for the place.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
-    clip: "inventory",
-    framing: "menu",
-    seconds: 20,
-    title: "Inventory actions reach Bedrock",
-    label: "Chest transfer · server inventory state",
-    annotation: {
-      from: 14,
-      title: "BDS check after this take",
-      detail: "Chest: 0 emeralds · player: 4 · passed",
-    },
-    narration:
-      "A chest screen can look right and still be wrong underneath. So we move items out of the chest, then a behavior pack checks what the server thinks is in the chest and the player's inventory.",
-    evidence: "test-packs/entity-probe/README.md",
+    clip: "galaxite-lobby",
+    framing: "world",
   },
   {
-    id: "character",
+    id: "galaxite-actors",
+    seconds: 14,
+    title: "A world with its own characters",
+    narration:
+      "And it has its own residents. These characters were made for Galaxite, with their own shapes and animations, and they show up right there in my Java client.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "galaxite-actors",
+    framing: "world",
+  },
+  {
+    id: "galaxite-menu",
+    seconds: 14,
+    title: "Menus made for this server",
+    narration:
+      "Menus feel like Galaxite, too. The game selector has the server's own artwork and its own lineup. I take my time, hover over a few, and pick one that looks fun.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "galaxite-menu",
+    framing: "menu",
+  },
+  {
+    id: "galaxite-items",
+    seconds: 11,
+    title: "Your inventory comes too",
+    narration:
+      "Check the hotbar. Galaxite gives you its own items, and I can scroll through them, hold one up, and open the inventory to look closer.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "galaxite-items",
+    framing: "menu",
+  },
+  {
+    id: "player-emote",
+    seconds: 15,
+    title: "Say it with an emote",
+    narration:
+      "Okay, enough sightseeing. Time to be a bit more me. Open the emote wheel, pick one, and... yeah. Which emotes you have depends on your account.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "player-emote",
+    framing: "world",
+  },
+  {
+    id: "player-character",
+    seconds: 16,
+    title: "Bring your character",
+    narration:
+      "And it's not just emotes. The Character Creator opens right inside Java, with your saved slots and a full model preview. I can flip through pieces and see how each one looks on me. Find a look you like before you head back into the world.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Recorded Dressing Room, saved character slots, and hair/face piece previews",
     kind: "footage",
     clip: "character",
     framing: "menu",
-    seconds: 26,
-    title: "Build a Bedrock character",
-    label: "Character Creator · saved slots · piece previews",
-    narration:
-      "Next, the Dressing Room, which opens your Bedrock characters inside Java. You can flip through saved slots, look over the assembled model, and preview individual pieces. Classic skins and Character Creator looks load through separate resource and account paths.",
-    evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0009-show-saved-character-creator-slots.pr.md",
   },
   {
-    id: "emotes",
-    kind: "footage",
-    clip: "emotes",
-    framing: "world",
-    seconds: 21,
-    title: "Use an emote in the world",
-    label: "Bedrock emote wheel and player animation",
+    id: "player-friends",
+    seconds: 13,
+    title: "Find your Bedrock friends",
     narration:
-      "Open the wheel, choose an emote, and watch it play on your character. These animations are running in the live Galaxite lobby. The emotes you can choose depend on your Bedrock account.",
-    evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0009-show-saved-character-creator-slots.pr.md",
-  },
-  {
-    id: "friends",
+      "Now, back to those friends on Bedrock. Your friends list is here, with requests, parties, and the worlds they have open, all in a Java client.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "Recorded Bedrock Friends, requests, worlds, and party menus",
     kind: "footage",
     clip: "friends",
     framing: "menu",
-    seconds: 18,
-    title: "Bedrock Friends inside Java",
-    label: "Friends, requests, joinable worlds, and parties",
-    narration:
-      "Bedrock Friends brings the social side into Java. Browse your friends list, pending requests, joinable worlds, and parties, all tied to your Bedrock account.",
-    evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0001-social-party-realms.pr.md",
   },
   {
-    id: "realms",
+    id: "player-realms",
+    seconds: 12,
+    title: "Your Realm menus are here",
+    narration:
+      "Realms show up too, at least the menus. Your Realm list is there, and the Realm Hub opens up. What you see depends on your account.",
+    label: "Realm list and Realm Hub menus",
+    evidence:
+      "Recorded Realm list and Realm Hub world/settings menus; menus only",
     kind: "footage",
     clip: "realms",
     framing: "menu",
-    seconds: 18,
-    title: "Realms and Realm Hub",
-    label: "Account menus · no unavailable join is shown",
-    narration:
-      "Realms and Realm Hub get their own screens too. Here we're browsing the management menus. Access depends on your account and the Realm itself.",
-    evidence:
-      "patches/viafabricplus-bedrock/upstreamable/0001-social-party-realms.pr.md",
   },
   {
-    id: "routes",
-    kind: "routes",
-    seconds: 18,
-    title: "Two ways to connect",
-    label: "Choose the setup that fits your client",
+    id: "player-guide",
+    seconds: 12,
+    title: "Ready to try it?",
     narration:
-      "Two ways in. Fabric with ViaFabricPlus and the Bedrock add-on gives you these menus and native rendering. A regular Java client can use Stack Anvil ViaProxy, with different capabilities.",
-    evidence: "site/getting-started.md",
-  },
-  {
-    id: "testing",
-    kind: "testing",
-    seconds: 24,
-    title: "How we test the bridge",
-    label: "Bedrock reference server + Java server through Geyser",
-    narration:
-      "Then there's the test lab. On Bedrock Dedicated Server, behavior packs set up fixtures. A second route runs Java through ViaBedrock and Geyser into Paper, where a plugin implements the same test contract with custom content. Boar's movement diagnostics add one more check.",
-    evidence: "docs/development.md; docs/bedrock-test-packs.md",
-  },
-  {
-    id: "debug",
-    kind: "footage",
-    clip: "debug",
-    framing: "world",
-    seconds: 24,
-    title: "Debug worlds turn bugs into cases",
-    label: "Prepared fixtures · actual Java input · server assertions",
-    narration:
-      "The debug worlds isolate the hard stuff: entities, blocks, inventories, projectiles, and movement. For each case, the driver sets things up, sends real Java input, and asks the server what changed. A disconnect or a failed assertion counts as a failure.",
-    evidence: "docs/bedrock-test-packs.md",
-  },
-  {
-    id: "automation",
-    kind: "testing",
-    seconds: 22,
-    title: "Checks at several layers",
-    label:
-      "Unit tests · integration cases · negative controls · live playtesting",
-    narration:
-      "Unit and integration tests check code and server state. Negative controls are deliberately broken fixtures that should fail. Recorded scenes can be replayed to chase regressions. Live playtesting still matters, since passing tests can't show full parity.",
-    evidence: "docs/server-replay.md; docs/bedrock-test-packs.md",
-  },
-  {
-    id: "traffic",
-    kind: "traffic",
-    seconds: 24,
-    title: "Observe the traffic that matters",
-    label: "HTTPS capture and gameplay packet inspection are separate",
-    narration:
-      "For account and service requests, we run HTTPS through MITMProxy. Gameplay is a separate job, handled by packet recording, sniffing, and journals. Then we compare the native client's traffic with the Java path's. Raw captures and credentials stay private.",
-    evidence: "docs/capture-lab.md",
-  },
-  {
-    id: "research",
-    kind: "research",
-    seconds: 24,
-    title: "Research, implement, reproduce",
-    label: "Versioned protocol research · native comparisons · AI assistance",
-    narration:
-      "Bedrock reverse engineering starts with one specific game build. Versioned docs, native client comparisons, and implementation research all feed into the patches. AI helps with coding, research, and investigation. Then native evidence, tests, and human review decide whether the work holds up.",
-    evidence:
-      "docs/bedrock-development-sources.md; maintainer production brief",
-  },
-  {
-    id: "website",
+      "Want to try it? Everything starts at Stack Anvil dot pistonmaster dot net. The player guide has every step. Here's the short version.",
+    label: "stackanvil.pistonmaster.net/getting-started/",
+    evidence: "site/getting-started.md and current player guide",
     kind: "footage",
     clip: "website",
     framing: "web",
-    seconds: 18,
-    title: "Start with the player guide",
-    label: "stackanvil.pistonmaster.net",
-    narration:
-      "Start at Stack Anvil dot pistonmaster dot net. The player guide walks you through both connection routes, then points you to the matching builds for the setup you pick.",
-    evidence: "https://stackanvil.pistonmaster.net/",
   },
   {
-    id: "downloads",
-    kind: "downloads",
-    seconds: 16,
-    title: "Get the Bedrock add-on",
-    label: "CurseForge · GitHub releases · ready-to-import client bundle",
+    id: "player-install",
+    seconds: 25,
+    title: "Install the Fabric mod",
     narration:
-      "The Bedrock add-on has a CurseForge listing. GitHub releases carry the matching Stack Anvil artifacts and an importable client bundle. Keep the versions matched.",
-    evidence: "README.md",
+      "First, set up Fabric Loader for the Minecraft version the website lists. Then two downloads. The Stack Anvil Bedrock Addon for ViaFabricPlus, from CurseForge. And the matching ViaFabricPlus JAR, from the same GitHub release linked there. Drop both into your mods folder. Just one copy of ViaFabricPlus. The add-on covers the rest.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
+    kind: "install",
   },
   {
-    id: "developers",
+    id: "player-connect",
+    seconds: 22,
+    title: "Sign in, choose Bedrock, join",
+    narration:
+      "Start Minecraft with Fabric, open Multiplayer, and click ViaFabricPlus. Under Bedrock settings, choose Account for Bedrock Edition and sign in through your browser. Then add the server address, pick the matching Bedrock version in ViaFabricPlus, and accept resource packs when asked.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
     kind: "footage",
-    clip: "javadocs",
-    framing: "web",
+    clip: "connect",
+    framing: "menu",
+  },
+  {
+    id: "player-help",
     seconds: 20,
-    title: "For developers",
-    label: "Published Maven artifacts and Javadocs",
+    title: "Found a bug? Tell us",
     narration:
-      "Building on this yourself? There are published Maven artifacts and Javadocs for the add-on, ViaBedrock, CubeConverter, and ViaProxy. The repo keeps every patch separate, so each one can be reviewed and sent upstream.",
-    evidence: "site/libraries.md",
+      "Stack Anvil is still experimental. Compatibility varies by server, and some resource packs render imperfectly. Something broken? Tell us. Get help in Discord. Report bugs on GitHub: your versions, server, steps, and what happened. Leave out account details.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
+    kind: "help",
   },
   {
-    id: "contribute",
-    kind: "footage",
-    clip: "contributing",
-    framing: "web",
-    seconds: 18,
-    title: "Help us reproduce the next bug",
-    label: "Report a case · compare native behavior · contribute a patch",
+    id: "player-outro",
+    seconds: 9,
+    title: "Try your next Bedrock server",
     narration:
-      "Want to help? Report focused, reproducible bugs, with the build you used and what you expected. Native comparisons, tests, and upstream patches are welcome too.",
-    evidence: "site/contributing.md",
-  },
-  {
-    id: "outro",
+      "Keep your Java client. Pick a Bedrock server. And tell your friends you're on your way.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
     kind: "outro",
-    seconds: 12,
-    title: "Try StackAnvil",
-    label: "stackanvil.pistonmaster.net",
-    narration:
-      "Stack Anvil is an independent, experimental project. Try it, report what breaks, or help fix it.",
-    evidence: "site/index.md",
   },
 ];
+
 export const shortScenes: Scene[] = [
   {
-    id: "short-intro",
-    kind: "footage",
-    clip: "lobby",
-    framing: "world",
-    seconds: 8,
-    title: "Java client. Bedrock lobby.",
-    label: "StackAnvil",
-    narration:
-      "A real Java client, live in Galaxite's Bedrock lobby. This is Stack Anvil.",
-    evidence: "Live Galaxite capture",
+    id: "cameo-short",
+    seconds: 5,
+    title: "Friends picked Bedrock",
+    narration: "Wait, you're all on Bedrock?",
+    label: "Community cameo \u00b7 acted dialogue",
+    evidence: "Supplied 64x64 community skin PNG; fictional dialogue",
+    kind: "cameo",
+    voice: "brian",
   },
   {
-    id: "short-actors",
-    kind: "footage",
-    clip: "actors",
-    framing: "world",
-    seconds: 8,
-    title: "Server-made characters",
-    label: "Models and animation in Java",
+    id: "hook-short",
+    seconds: 10,
+    title: "Java on Bedrock servers",
     narration:
-      "Galaxite's native characters, animating in Java with the server's own models and textures.",
-    evidence: "Live Galaxite capture",
+      "Stack Anvil lets your Java client join Bedrock servers, like CubeCraft.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "cube-short",
+    framing: "world",
   },
   {
-    id: "short-forms",
-    kind: "footage",
-    clip: "forms-short",
-    framing: "menu",
-    seconds: 9,
-    title: "The server's own menus",
-    label: "Galaxite UI",
+    id: "galaxite-short",
+    seconds: 11,
+    title: "Explore Galaxite",
     narration:
-      "The game selector is Galaxite's own menu, and your pick goes straight back to the server.",
-    evidence: "Live Galaxite capture",
+      "Over on Galaxite, the server's own characters and game menus show up right in Java.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "galaxite-short",
+    framing: "world",
   },
   {
-    id: "short-emotes",
-    kind: "footage",
-    clip: "emotes-short",
-    framing: "world",
-    seconds: 9,
+    id: "emote-short",
+    seconds: 10,
     title: "Bring your character",
-    label: "Dressing Room and emotes",
     narration:
-      "Bring your saved Bedrock character along. Open the wheel, pick an emote, and let it play.",
-    evidence: "Live Java capture",
+      "And yes, I brought my emotes. Which ones you get depends on your account.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence:
+      "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
+    kind: "footage",
+    clip: "emote-short",
+    framing: "world",
   },
   {
-    id: "short-testing",
-    kind: "testing",
-    seconds: 10,
-    title: "Built with a test lab",
-    label: "BDS · Geyser + Boar · live playtesting",
+    id: "install-short",
+    seconds: 11,
+    title: "Get the Fabric mod",
     narration:
-      "Behind it sits a test lab, with debug worlds, automated tests, packet inspection, and live playtesting.",
-    evidence: "docs/development.md",
+      "Install Fabric. Grab the add-on from CurseForge and the matching ViaFabricPlus. Both go in your mods folder.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
+    kind: "install",
   },
   {
-    id: "short-outro",
-    kind: "outro",
+    id: "help-short",
     seconds: 10,
-    title: "Try StackAnvil",
-    label: "stackanvil.pistonmaster.net",
+    title: "Try it and report bugs",
     narration:
-      "It's an independent, experimental project. Grab the guide at Stack Anvil dot pistonmaster dot net, and report what breaks.",
-    evidence: "site/index.md",
+      "Start at Stack Anvil dot pistonmaster dot net. Bugs? Please tell us on Discord or GitHub.",
+    label: "Minecraft Java Edition \u00b7 StackAnvil Bedrock add-on",
+    evidence: "site/getting-started.md and current player guide",
+    kind: "help",
   },
 ];
+
 export function scenesFor(edition: Edition = "landscape") {
   return edition === "vertical" ? shortScenes : scenes;
 }

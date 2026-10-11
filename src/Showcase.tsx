@@ -15,7 +15,8 @@ import { Captions } from "./components/Captions";
 import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "./config";
 import { timeline, type VideoProps } from "./production";
 import { Gameplay } from "./scenes/Gameplay";
-import { Information } from "./scenes/Information";
+import { PlayerGuide } from "./scenes/PlayerGuide";
+import { Cameo } from "./scenes/Cameo";
 import { Outro } from "./scenes/Outro";
 
 export function Showcase({ production, captions, draft, edition }: VideoProps) {
@@ -42,10 +43,12 @@ export function Showcase({ production, captions, draft, edition }: VideoProps) {
             <TransitionSeries.Sequence durationInFrames={frames}>
               {scene.kind === "footage" ? (
                 <Gameplay clip={production.clips[scene.clip]} scene={scene} />
+              ) : scene.kind === "cameo" ? (
+                <Cameo />
               ) : scene.kind === "outro" ? (
                 <Outro />
               ) : (
-                <Information scene={scene} />
+                <PlayerGuide scene={scene} />
               )}
             </TransitionSeries.Sequence>
           </Fragment>

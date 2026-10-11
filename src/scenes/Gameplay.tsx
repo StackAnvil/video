@@ -75,32 +75,6 @@ export function Gameplay({
           {scene.label}
         </div>
       </div>
-      {scene.annotation && frame >= scene.annotation.from * FPS && (
-        <div
-          style={{
-            position: "absolute",
-            top: 64,
-            right: 64,
-            maxWidth: 650,
-            backgroundColor: "rgba(24,35,30,0.88)",
-            borderLeft: `4px solid ${brand.mint}`,
-            padding: "20px 26px",
-            opacity: interpolate(
-              frame,
-              [scene.annotation.from * FPS, scene.annotation.from * FPS + 15],
-              [0, 1],
-              { extrapolateLeft: "clamp", extrapolateRight: "clamp" },
-            ),
-          }}
-        >
-          <div style={{ color: brand.mint, fontSize: 28 }}>
-            {scene.annotation.title}
-          </div>
-          <div style={{ fontSize: 30, marginTop: 8 }}>
-            {scene.annotation.detail}
-          </div>
-        </div>
-      )}
       {vertical && framing !== "world" && (
         <div
           style={{

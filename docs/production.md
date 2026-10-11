@@ -1,55 +1,45 @@
-# Expanded showcase production brief
+# Player showcase production brief
 
 ## Audience and goal
 
-Show Minecraft Java players what a Bedrock server session looks like through StackAnvil. Give developers enough detail to understand how the bridge is tested and where to contribute.
+Show Minecraft Java players how to explore Bedrock server content while they keep their Java client. Follow a player through real servers, appearance options, account menus, installation, and help.
 
-The maintainer requested a longer tour, natural movement, richer server content, and a separate portrait cut. Liam remains the narrator, with calm delivery. The script was rewritten with Claude CLI using Opus 5.5 and high effort, then checked against the feature sources and captures.
+Use Claude CLI with Opus 5.5 at high effort to rewrite the narrative. Check every claim against the filmed action and current player guide. Liam guides the tour. Brian supplies the short fictional opening dialogue for the community skin cameo.
 
-## Gameplay direction
+## Story
 
-Open in Galaxite's live lobby. Show server actors, resource-pack artwork, the game selector, inventory items, and emotes. Use gradual mouse turns, short walks toward something useful, pauses to inspect it, and deliberate menu choices. Keep the player grounded. Do not use flight as the opening demonstration.
+The opening shows a Java player whose friends picked a Bedrock server. Cut to a real Java session on CubeCraft Bedrock. Explore its game characters and authored selector, then enter the parkour area.
 
-Use the local Bedrock resource probe for custom blocks. Use the behavior-pack chest fixture for inventory actions and server assertions. Label controlled worlds separately from live public servers.
+Visit Galaxite next. Use fresh footage of its world, characters, game selector, items, and emotes. Show Character Creator, Friends, and Realm Hub menus as player features. Show no unavailable Realm joins.
 
-Browse saved characters and piece previews. Show Friends and Realm Hub menus. The account's available menus establish this demonstration. Do not imply an unavailable Realm join succeeded.
+End with the website, the CurseForge Fabric add-on, the matching ViaFabricPlus download, and the connection steps. Emphasize Discord for help and GitHub issues for bug reports.
 
-Use real website and Javadoc captures. Include the CurseForge listing and matching release links. Keep screenshots of blocked pages out of the film.
+Exclude debug worlds, test fixtures, development explanations, technical route diagrams, Javadocs, and code contribution guidance from this video.
 
-## Story and evidence
+## Filming
 
-`src/config.ts` contains the complete scene order, narration, duration floor, and evidence reference. Each required clip needs a provenance entry and review in the private production manifest.
+Record real Java gameplay on the parent's private display with zero gameplay volume. Use purposeful walks, gradual camera turns, short inspection pauses, and smooth pointer paths. Wait for the world to load before moving. Reject clips with loading failures or unintended falls through terrain.
 
-The later portion explains these routes:
+Give each main scene its own take or a distinct chronological excerpt. Avoid overlapping footage within the main cut. Use the short composition for selected excerpts from the same shoot.
 
-- Java input through ViaBedrock into BDS. Behavior packs prepare fixtures and inspect server state.
-- Java input through ViaBedrock and Geyser into Paper. Java plugins supply fixtures and assertions. Boar adds movement diagnostics.
-- Unit checks, integration cases, negative controls, recorded-scene replay, and live playtesting.
-- MITMProxy for HTTPS account and service traffic. Gameplay packet journals and packet inspection are separate.
-- Versioned protocol research, native-client comparisons, reverse engineering, AI assistance, and human review.
+Keep account data private. Blur private identities in social menus. Record the server, client build, connection route, action, and capture date in the ignored production manifest. Review the full trimmed clip before marking it ready.
 
-A passing case establishes its measured behavior. It does not establish complete Bedrock parity. Keep failures and observation limits visible in research records.
+The supplied skin is an exact local PNG asset. Render its pixel art as a community cameo illustration, separate from real gameplay. Label the dialogue as fictional. Do not use a recording or clone of the skin owner's voice.
 
-The parent guides are the primary sources: `docs/bedrock-test-packs.md`, `docs/capture-lab.md`, `docs/server-replay.md`, and `docs/bedrock-development-sources.md`. Add-on patch context documents establish the account menus, authored UI, native actors, and appearance features.
+## Layout
 
-## Visual direction
+Keep the existing forest, mint, paper, and rust palette. Use Anton for brief titles and Space Grotesk for captions and instructions.
 
-Use forest `#15372d`, dark `#18231e`, paper `#f1f4f2`, mint `#c7e8d3`, and rust `#a75130`. Anton supplies short titles; Space Grotesk supplies labels and captions.
+Gameplay carries most of the story. Show short labels, then clear the view. Installation and help graphics use aligned columns with consistent spacing. Avoid connection arrows and technology boxes.
 
-Gameplay fills the landscape frame. Labels appear briefly and leave the action visible. Testing graphics trace the connection and evidence paths. Use short crossfades between scenes.
+The portrait cut has a separate script. Keep menus fully visible within their focus region. Use `portraitMenus` ranges for overlays during world shots. Keep subtitles and key actions away from platform controls.
 
-The portrait cut uses a separate script and composition. Crop world footage around the action. Focus menu footage on its actual controls. Use the clip manifest's `portraitMenus` ranges when an overlay, such as the emote wheel, opens during a world shot. Leave room for captions and platform controls.
+## Audio and exports
 
-## Audio and deliverables
+Use Eleven v4 through the timestamped dialogue API. Select the voice per scene and include it in the cache signature. Keep a decoded quiet tail and a timeline hold after narration. Derive captions from measured alignment.
 
-Use [Eleven v4](https://elevenlabs.io/docs/overview/models) with Liam through the [timestamped dialogue API](https://elevenlabs.io/docs/api-reference/text-to-dialogue/convert-with-timestamps). The current account supports 128 kbps MP3 output. Higher bitrates require a different subscription tier.
+Use a licensed instrumental and duck it under speech. Keep generated assets and their provenance private. Master at -16 LUFS and check the encoded true peak against the -1.5 dBTP ceiling.
 
-Decode narration to WAV with an added quiet tail. Keep the entire measured audio duration and an extra timeline hold before the next transition. Caption boundaries come from character alignment. Audio tags do not appear in subtitles.
+Deliver landscape and portrait MP4s, burned captions, SRT and VTT files, thumbnails, and posting descriptions. Keep descriptions focused on players, downloads, and bug reporting. Credit upstream work and production assets briefly.
 
-Use Eleven Music v2.5 for an understated instrumental. Keep its generation metadata private and record the applicable ElevenLabs terms in the manifest. A short track can use one middle phrase repeat with crossfades. The local CC0 score remains available for offline production.
-
-Duck the music smoothly under narration. Keep gameplay silent. Apply two-pass normalization at -16 LUFS with a -1.5 dBTP ceiling, then check the encoded result.
-
-Deliver both MP4 cuts, burned captions, SRT and VTT files, thumbnails, and posting descriptions. Keep raw footage, account data, licensed pack exports, audio caches, and the local manifest private.
-
-Inspect each scene and its transitions. Review the complete exported videos before publication. Chapters must follow [YouTube's timing requirements](https://support.google.com/youtube/answer/9884579?hl=en). Uploading is a separate action.
+Inspect scene layouts and transitions. Review the complete exports and their soundtracks. Run the source checks and timing tests. Uploading is a separate action.

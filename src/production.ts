@@ -34,6 +34,7 @@ export interface Voice {
 export interface Production {
   clips: Record<string, Clip>;
   voices: Record<string, Voice>;
+  images?: Record<string, { file: string; sha256: string; provenance: string }>;
   music?: { file: string; sha256: string; duration: number; license: string };
 }
 export type VideoProps = {
@@ -90,6 +91,8 @@ export function readiness(
 ) {
   const failures: string[] = [];
   for (const scene of scenesFor(edition)) {
+    if (scene.kind === "cameo" && !production.images?.["community-skin"])
+      failures.push("Missing supplied community skin");
     if ("clip" in scene) {
       const clip = production.clips[scene.clip];
       if (!clip) failures.push(`Missing footage: ${scene.clip}`);

@@ -10,7 +10,8 @@ export async function voiceover(
   if (style !== "calm" && style !== "energetic")
     throw new Error("Choose calm or energetic");
   const key = process.env.ELEVENLABS_API_KEY;
-  const voiceId = process.env.ELEVENLABS_VOICE_ID ?? "TX3LPaxmHKxFdv7VOQHJ";
+  const narratorVoice =
+    process.env.ELEVENLABS_VOICE_ID ?? "TX3LPaxmHKxFdv7VOQHJ";
   const production = await load();
   await directory("public/media/voiceover");
   await directory(".cache/voiceover");
@@ -19,6 +20,10 @@ export async function voiceover(
   );
   if (!selected.length) throw new Error("Unknown narration scene");
   for (const scene of selected) {
+    const voiceId =
+      scene.voice === "brian"
+        ? (process.env.ELEVENLABS_CAMEO_VOICE_ID ?? "nPczCjzI2devNBz1zQrb")
+        : narratorVoice;
     const signature = JSON.stringify({
       text: scene.narration,
       style,

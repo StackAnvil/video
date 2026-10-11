@@ -2,7 +2,7 @@
 
 Create YouTube showcases of Java clients on Bedrock servers. This project uses Remotion, recorded gameplay, ElevenLabs narration, aligned captions, and instrumental music.
 
-`StackAnvilShowcase` is the longer 1080p tour. `StackAnvilShort` is a separate 1080×1920 cut for Shorts, TikTok, and Instagram. They cover live server content, account menus, and the testing lab. Read the [production brief](docs/production.md) and [episode catalog](docs/features.md) before filming.
+`StackAnvilShowcase` is the longer 1080p tour. `StackAnvilShort` is a separate 1080×1920 cut for Shorts, TikTok, and Instagram. They follow a Java player through CubeCraft Bedrock, Galaxite, personal features, and installation. Read the [production brief](docs/production.md) and [episode catalog](docs/features.md) before filming.
 
 ## Prepare the editor
 
@@ -15,7 +15,7 @@ bun install --frozen-lockfile
 cp .env.example .env
 ```
 
-Set `ELEVENLABS_API_KEY` in `.env`. Set `STACKANVIL_NARRATION` to `calm` or `energetic`. The default voice is Liam. Narration uses Eleven v4 through the timestamped dialogue API.
+Set `ELEVENLABS_API_KEY` in `.env`. Set `STACKANVIL_NARRATION` to `calm` or `energetic`. Liam narrates the tour; Brian plays the short fictional opening cameo. Narration uses Eleven v4 through the timestamped dialogue API. Use `ELEVENLABS_CAMEO_VOICE_ID` to choose a different cameo voice.
 
 ```console
 bun run voiceover calm
@@ -23,7 +23,7 @@ bun run music elevenlabs
 bun run dev
 ```
 
-Narration includes measured timestamps. Pass a scene ID to regenerate one line, for example `bun run voiceover calm realms`. The scene duration expands for longer speech and keeps a decoded audio tail before each transition. Run `music elevenlabs` after narration to cover the complete timeline with Eleven Music v2.5. The command caches the generated track. If it is slightly short, one middle phrase repeats with crossfades. Use `music original` for the local CC0 score.
+Narration includes measured timestamps. Pass a scene ID to regenerate one line, for example `bun run voiceover calm player-realms`. The scene duration expands for longer speech and keeps a decoded audio tail before each transition. Run `music elevenlabs` after narration to cover the complete timeline with Eleven Music v2.5. The command caches the generated track. If it is slightly short, one middle phrase repeats with crossfades. Use `music original` for the local CC0 score.
 
 ## Record footage
 
@@ -50,10 +50,10 @@ bun run capture ui run video/scenarios/gameplay.json --client java
 
 The `scenarios/menu.json` recipe records a menu that you already opened. Each take needs a fresh capture session or recording name.
 
-The long tour uses `lobby`, `lobby-tour`, `actors`, `forms`, `items`, `blocks`, `inventory`, `character`, `emotes`, `friends`, `realms`, `debug`, `website`, `javadocs`, and `contributing`. The short also uses `forms-short` and `emotes-short`. Import selected ranges from the video directory:
+The long tour needs fresh CubeCraft and Galaxite shots, plus Character Creator, Friends, Realm menus, the player guide, and connection settings. Scene IDs and clip IDs live in `src/config.ts`. Import a selected range from the video directory:
 
 ```console
-bun run footage lobby /absolute/path/to/lobby-java.mp4 2 15 "Owned local Bedrock 1.26.51.1 world, direct Fabric connection"
+bun run footage cube-lobby /absolute/path/to/cube-characters-java.mp4 0 12 "CubeCraft Bedrock, live Fabric client on the private display"
 ```
 
 The importer removes audio and records a checksum. Raw recordings stay in the parent's private `.stackanvil/` directory. Imported clips and the local production manifest also remain ignored.
@@ -61,7 +61,7 @@ The importer removes audio and records a checksum. Raw recordings stay in the pa
 Watch the entire imported clip. Verify the feature, account privacy, player names, chat, addresses, and included pack artwork. Then record your review:
 
 ```console
-bun run review lobby
+bun run review cube-lobby
 ```
 
 Changing imported bytes invalidates the checksum. Importing a replacement clears its review status.
@@ -90,7 +90,7 @@ Final files appear in `out/`:
 - `showcase-vertical.mp4`: 1080×1920 H.264 at 30 fps with phone-safe captions.
 - `showcase-vertical.srt`, `showcase-vertical.vtt`, and `social-description.txt`: portrait subtitles and posting text.
 - `showcase.srt`, `showcase.vtt`, and `showcase.captions.json`: measured subtitles for YouTube and further edits.
-- `thumbnail.png`: the opening frame without captions, exported by `inspect`.
+- `thumbnail.png`: a server frame without captions, exported by `inspect`.
 - `youtube-description.txt`: a description with chapters, project links, and credits.
 
 Before uploading, watch the full render. Listen for clipped speech, weak music balance, and incorrect pronunciation. Verify subtitle timing and each demonstration. Uploading is a separate action.

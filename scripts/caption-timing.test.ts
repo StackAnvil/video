@@ -22,8 +22,8 @@ describe("production timing", () => {
   });
   test("long narration extends a scene and shifts later scenes", () => {
     const production = structuredClone(emptyProduction);
-    production.voices.intro = {
-      file: "intro.mp3",
+    production.voices[timeline(production)[0].scene.id] = {
+      file: "voice.wav",
       sha256: "",
       text: "",
       duration: 20,
