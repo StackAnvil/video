@@ -1,0 +1,10 @@
+{
+  "name": "Record an observed menu after it finishes loading",
+  "steps": [
+    { "action": "mark", "label": "Showcase: observed Java menu" },
+    { "action": "wait", "ms": 500 },
+    { "action": "videoStart", "name": "showcase-menu", "fps": 60 },
+    { "action": "wait", "ms": 16000 },
+    { "action": "videoStop" }
+  ]
+}

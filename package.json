@@ -1,0 +1,49 @@
+{
+  "name": "stackanvil-video",
+  "version": "1.0.0",
+  "description": "Gameplay showcases of Java clients on Bedrock servers",
+  "repository": "https://github.com/StackAnvil/video",
+  "license": "GPL-3.0-or-later",
+  "private": true,
+  "dependencies": {
+    "@fontsource-variable/space-grotesk": "^5.3.0",
+    "@fontsource/anton": "^5.3.0",
+    "@remotion/bundler": "4.0.534",
+    "@remotion/captions": "4.0.534",
+    "@remotion/cli": "4.0.534",
+    "@remotion/media": "4.0.534",
+    "@remotion/renderer": "4.0.534",
+    "@remotion/transitions": "4.0.534",
+    "react": "19.2.3",
+    "react-dom": "19.2.3",
+    "remotion": "4.0.534"
+  },
+  "devDependencies": {
+    "@remotion/eslint-config-flat": "4.0.534",
+    "@types/bun": "^1.4.2",
+    "@types/react": "19.2.7",
+    "@types/web": "0.0.166",
+    "eslint": "9.39.5",
+    "lefthook": "^2.2.1",
+    "prettier": "3.8.1",
+    "typescript": "5.9.3"
+  },
+  "scripts": {
+    "prepare": "lefthook install",
+    "dev": "bun scripts/produce.ts studio",
+    "build": "remotion bundle src/index.ts",
+    "compositions": "remotion compositions src/index.ts",
+    "voiceover": "bun scripts/produce.ts voiceover",
+    "music": "bun scripts/produce.ts music",
+    "footage": "bun scripts/produce.ts footage",
+    "review": "bun scripts/produce.ts review",
+    "inspect": "bun scripts/produce.ts inspect",
+    "render:preview": "bun scripts/produce.ts preview",
+    "render": "bun scripts/produce.ts render",
+    "verify": "bun scripts/produce.ts verify",
+    "typecheck": "tsc --noEmit",
+    "test": "bun test",
+    "format": "prettier --write src scripts README.md docs AGENTS.md",
+    "check": "eslint src scripts && tsc --noEmit"
+  }
+}
