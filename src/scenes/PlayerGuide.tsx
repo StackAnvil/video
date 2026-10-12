@@ -31,7 +31,7 @@ const help: GuideRow[] = [
   {
     title: "Discord",
     detail: "Ask for help and share what went wrong.",
-    link: "discord.gg/F4ZyEtXXge",
+    link: "pistonmaster.net/discord",
   },
   {
     title: "GitHub issues",
