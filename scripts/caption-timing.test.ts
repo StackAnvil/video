@@ -83,6 +83,13 @@ describe("production timing", () => {
     const entries = chapters(emptyProduction);
     expect(entries.length).toBeGreaterThanOrEqual(3);
     expect(entries[0].seconds).toBe(0);
+    for (const entry of entries) {
+      const start = timeline(emptyProduction).find(
+        ({ scene }) => scene.id === entry.scene.id,
+      )!.start;
+      expect(entry.seconds * FPS).toBeGreaterThanOrEqual(start);
+      expect(entry.seconds * FPS).toBeLessThan(start + FPS);
+    }
     for (let i = 1; i < entries.length; i++)
       expect(
         entries[i].seconds - entries[i - 1].seconds,

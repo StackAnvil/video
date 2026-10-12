@@ -38,6 +38,7 @@
     "footage": "bun scripts/produce.ts footage",
     "review": "bun scripts/produce.ts review",
     "inspect": "bun scripts/produce.ts inspect",
+    "posting": "bun scripts/produce.ts posting",
     "render:preview": "bun scripts/produce.ts preview",
     "render": "bun scripts/produce.ts render",
     "verify": "bun scripts/produce.ts verify",

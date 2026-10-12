@@ -24,6 +24,7 @@ import { directory, hash, load, mediaDuration, root, run, save } from "./io";
 import { music } from "./music";
 import { masterAudio } from "./master-audio";
 import { voiceover } from "./voiceover";
+import { publishing } from "../src/publishing";
 
 async function verify(edition: Edition = "landscape") {
   const production = await load();
@@ -119,10 +120,11 @@ async function footage(args: string[]) {
   );
 }
 
-async function exportSubtitles(
+async function exportCaptionsAndMetadata(
   production: VideoProps["production"],
   edition: Edition,
 ) {
+  await directory("out");
   const prefix = edition === "vertical" ? "showcase-vertical" : "showcase";
   const captions: Caption[] = timeline(production, edition).flatMap(
     ({ scene, start }) =>
@@ -141,14 +143,11 @@ async function exportSubtitles(
     resolve(root, `out/${prefix}.captions.json`),
     JSON.stringify(captions, null, 2),
   );
-  const coverageText =
-    edition === "landscape"
-      ? "Keep your Minecraft Java client and explore Bedrock server content. Real Java gameplay on CubeCraft Bedrock and Galaxite, with server menus, custom characters and items, emotes with the default B keybind, Character Creator, Friends and Realms menus, including Economy SMP Community stories and Timeline activity. Realms footage shows menus only."
-      : "Your Java client, Bedrock server content. A short look at CubeCraft Bedrock, Galaxite, emotes with the default B keybind, and Realm Community and Timeline menus, with the Fabric mod download linked below.";
+  const metadata = publishing[edition];
   const chapterText = chapters(production, edition)
     .map(
-      ({ scene, seconds }) =>
-        `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")} ${scene.title.replace(/\n/g, " ")}`,
+      ({ title, seconds }) =>
+        `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")} ${title}`,
     )
     .join("\n");
   await Bun.write(
@@ -158,8 +157,49 @@ async function exportSubtitles(
         ? "out/social-description.txt"
         : "out/youtube-description.txt",
     ),
-    `Play Bedrock servers from Minecraft Java | StackAnvil\n\n${coverageText}\n\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nNeed help or found a bug? Please tell us.\nDiscord: https://discord.gg/F4ZyEtXXge\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your build and Minecraft versions, server, steps, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? chapterText : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nExperimental builds. Compatibility varies by server and game version; some resource packs have rendering limitations. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nAI narration: ElevenLabs Liam, Eleven v4. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
+    `${metadata.title}\n\n${metadata.intro}\n\nGet StackAnvil\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nHelp and bug reports\nDiscord: https://discord.gg/F4ZyEtXXge\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your Minecraft and mod versions, server, steps to reproduce, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? `Chapters\n${chapterText}` : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nStackAnvil is experimental. Compatibility varies by server and game version, and some resource packs have rendering limitations. B is the default emote key and can be rebound in Controls. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nAI narration: ElevenLabs Liam, Eleven v4. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
+}
+
+async function thumbnail(
+  production: VideoProps["production"],
+  edition: Edition,
+  serveUrl?: string,
+) {
+  const clip = production.clips["galaxite-actors"];
+  if (!clip?.reviewed || clip.duration < 3.1)
+    throw new Error("Thumbnail needs reviewed Galaxite model footage");
+  await directory("out/review");
+  const url =
+    serveUrl ??
+    (await bundle({
+      entryPoint: resolve(root, "src/index.ts"),
+      publicDir: resolve(root, "public"),
+    }));
+  const inputProps = { production, edition };
+  const composition = await selectComposition({
+    serveUrl: url,
+    id:
+      edition === "landscape"
+        ? "StackAnvilThumbnail"
+        : "StackAnvilShortThumbnail",
+    inputProps,
+  });
+  const name = edition === "vertical" ? "thumbnail-vertical" : "thumbnail";
+  for (const [scale, output] of [
+    [1, `out/${name}.jpg`],
+    [1 / 12, `out/review/${name}-mobile.jpg`],
+  ] as const)
+    await renderStill({
+      serveUrl: url,
+      composition,
+      inputProps,
+      frame: 0,
+      imageFormat: "jpeg",
+      jpegQuality: 90,
+      scale,
+      output: resolve(root, output),
+    });
 }
 
 async function render(
@@ -200,21 +240,8 @@ async function render(
           scale: 0.5,
         });
     }
-    await renderStill({
-      serveUrl,
-      composition,
-      inputProps: { ...inputProps, draft: false, captions: false },
-      frame:
-        (timeline(production, edition).find(
-          ({ scene }) => scene.kind === "footage",
-        )?.start ?? 0) + 90,
-      output: resolve(
-        root,
-        edition === "vertical"
-          ? "out/thumbnail-vertical.png"
-          : "out/thumbnail.png",
-      ),
-    });
+    if (production.clips["galaxite-actors"]?.reviewed)
+      await thumbnail(production, edition, serveUrl);
     console.log("Scene and transition frames: out/review");
   } else {
     let last = -1;
@@ -243,7 +270,8 @@ async function render(
       },
     });
     await masterAudio(outputLocation);
-    await exportSubtitles(production, edition);
+    await exportCaptionsAndMetadata(production, edition);
+    if (mode === "render") await thumbnail(production, edition, serveUrl);
   }
 }
 
@@ -254,6 +282,16 @@ async function main() {
   if (command === "voiceover") return voiceover(args[0], args[1]);
   if (command === "footage") return footage(args);
   if (command === "verify") return verify(edition);
+  if (command === "posting") {
+    await verify(edition);
+    const production = await load();
+    await exportCaptionsAndMetadata(production, edition);
+    await thumbnail(production, edition);
+    console.log(
+      "Upload package: designed thumbnail, metadata, and subtitles in out/",
+    );
+    return;
+  }
   if (command === "review") {
     const production = await load();
     const clip = production.clips[args[0]];
@@ -294,7 +332,7 @@ async function main() {
     return;
   }
   throw new Error(
-    "Commands: studio, footage, review, voiceover, music, verify, inspect, preview, render",
+    "Commands: studio, footage, review, voiceover, music, verify, posting, inspect, preview, render",
   );
 }
 await main().catch((error: unknown) => {

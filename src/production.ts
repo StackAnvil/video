@@ -1,4 +1,5 @@
 import type { Caption } from "@remotion/captions";
+import { publishing } from "./publishing";
 import {
   FPS,
   scenesFor,
@@ -77,10 +78,12 @@ export function chapters(
   const end = Math.floor(duration(production, edition) / FPS);
   let previous = -10;
   const entries = timeline(production, edition).flatMap(({ scene, start }) => {
-    const seconds = Math.floor(start / FPS);
+    const title = publishing[edition].chapters[scene.id];
+    if (!title) return [];
+    const seconds = Math.ceil(start / FPS);
     if (seconds - previous < 10 || end - seconds < 10) return [];
     previous = seconds;
-    return [{ scene, seconds }];
+    return [{ scene, seconds, title }];
   });
   return entries.length >= 3 ? entries : [];
 }

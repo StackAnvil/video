@@ -40,4 +40,10 @@ Use a licensed instrumental and duck it under speech. Keep generated assets and 
 
 Deliver landscape and portrait MP4s, burned captions, SRT and VTT files, thumbnails, and posting descriptions. Keep descriptions focused on players, downloads, and bug reporting. Credit upstream work and production assets briefly.
 
+Run `bun run posting` and `bun run posting vertical` to export the upload package without rendering the MP4s again. The designed thumbnails use reviewed Galaxite model footage with the title "BEDROCK ON JAVA". Inspect each image at full size and at mobile preview size.
+
+Keep titles, introductions, and chapter group names in `src/publishing.ts`. Chapter timestamps come from the final timeline. Use useful player sections and merge short scenes so each chapter lasts at least ten seconds. The main description includes chapters. The Short uses its own title, introduction, and hashtags.
+
+For authorized uploads, select Pistonmaster (`@pistondev`) in YouTube Studio. Verify the channel before uploading. Preserve the requested visibility and verify the saved metadata, custom thumbnails, and English caption tracks.
+
 Inspect scene layouts and transitions. Review the complete exports and their soundtracks. Run the source checks and timing tests. Uploading is a separate action.

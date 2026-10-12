@@ -16,4 +16,18 @@ Generate narration before music. Use measured speech alignment for captions. Pre
 
 Run `bun run check` and `bun run test`. Inspect scene and transition frames. Inspect the full audio and video before declaring a video ready for YouTube.
 
+## Publishing
+
+Treat the upload package as part of every finished video. An MP4 alone is not a complete delivery.
+
+- Create a designed thumbnail from reviewed footage and brand assets. Do not use a bare frame grab as the final thumbnail.
+- Keep thumbnail text brief and readable at mobile preview size. Export separate 16:9 and 9:16 thumbnails for the main and vertical cuts.
+- Write a distinct title and description for each cut. Lead with the player benefit and show only features that appear in the video.
+- Include the website, player guide, downloads, Discord, GitHub issues, compatibility limits, and asset credits in the description.
+- Derive main-video chapters from the final timeline, including transition overlap and measured narration. Start at `00:00`. Use at least three ascending timestamps, with ten seconds or more per chapter. Merge short scenes into useful sections. Do not invent timestamps or force invalid chapters into Shorts.
+- Export English SRT and VTT captions with the final timing. Preserve the thumbnail composition and metadata source in Git.
+- Run `bun run posting` and `bun run posting vertical` to regenerate thumbnails, descriptions, chapters, and subtitle files without rendering the MP4s again. Inspect the images at full size and at mobile preview size.
+- When the user authorizes YouTube work, use Pistonmaster (`@pistondev`, channel `UC86szSBHNiuIXC7hIfrMYtg`) for StackAnvil. Verify the channel name and handle before uploading. Never use the personal Alexander Kremer channel as a default. A channel named explicitly by the user takes precedence.
+- Preserve the requested visibility. Verify the saved title, description, chapters, thumbnail, caption track, channel, and visibility in Studio. Record video links and upload receipts in ignored local files.
+
 Write Conventional Commit messages. Add a body for non-trivial changes. Never bypass hooks. Never create a new branch without the user's instruction.
