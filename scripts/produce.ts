@@ -176,7 +176,7 @@ async function thumbnail(
       entryPoint: resolve(root, "src/index.ts"),
       publicDir: resolve(root, "public"),
     }));
-  const inputProps = { production, edition };
+  const inputProps = { production };
   const composition = await selectComposition({
     serveUrl: url,
     id:

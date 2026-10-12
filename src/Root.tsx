@@ -37,14 +37,14 @@ export const RemotionRoot: React.FC = () => {
         component={Thumbnail}
         width={3840}
         height={2160}
-        defaultProps={{ production: emptyProduction, edition: "landscape" }}
+        defaultProps={{ production: emptyProduction }}
       />
       <Still
         id="StackAnvilShortThumbnail"
         component={Thumbnail}
         width={2160}
         height={3840}
-        defaultProps={{ production: emptyProduction, edition: "vertical" }}
+        defaultProps={{ production: emptyProduction }}
       />
     </>
   );

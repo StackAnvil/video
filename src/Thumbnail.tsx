@@ -2,14 +2,13 @@ import { Video } from "@remotion/media";
 import { AbsoluteFill, staticFile, useVideoConfig } from "remotion";
 import { brand } from "./brand";
 import { BrandMark } from "./components/BrandMark";
-import type { Edition } from "./config";
 import type { Production } from "./production";
 
-export type ThumbnailProps = { production: Production; edition: Edition };
+export type ThumbnailProps = { production: Production };
 
-export function Thumbnail({ production, edition }: ThumbnailProps) {
-  const { width } = useVideoConfig();
-  const vertical = edition === "vertical";
+export function Thumbnail({ production }: ThumbnailProps) {
+  const { width, height } = useVideoConfig();
+  const vertical = height > width;
   const clip = production.clips["galaxite-actors"];
   const canvasWidth = vertical ? 1080 : 1280;
   const canvasHeight = vertical ? 1920 : 720;
