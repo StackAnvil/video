@@ -8,7 +8,9 @@ Use Claude CLI with Opus 5.5 at high effort to rewrite the narrative. Check ever
 
 ## Story
 
-Open with a real Java session on CubeCraft Bedrock. Address the viewer directly, explore the lobby and game selector, then play parkour. Do not explain familiar controls, NPCs, or inventories.
+Open with a real Java session on CubeCraft Bedrock. The first sentence identifies StackAnvil as a Fabric client mod that connects Java Edition to Bedrock servers. Use the first three clips to establish the mod, the Java installation, the Bedrock sign-in, and CubeCraft as a demonstration. Then play parkour. Do not explain familiar controls, NPCs, or inventories.
+
+Connect each new section to what StackAnvil enables in Java. Keep a small client, mod, and server label visible after the scene title clears. Review the opening as a new viewer: they must understand what the product is before the server tour.
 
 Visit Galaxite next. Use fresh footage of its world, characters, game selector, items, and emotes. Show Character Creator, Friends, and Realm Hub menus as player features. Show Economy SMP's Community story feed and weekly Timeline activity, including scrolling and week navigation. Show no unavailable Realm joins. Mention that B opens the emote wheel by default and that players can rebind it in Controls.
 
@@ -28,7 +30,7 @@ Keep credentials and account tokens private. The owner has approved showing the 
 
 Keep the existing forest, mint, paper, and rust palette. Use Anton for brief titles and Space Grotesk for captions and instructions.
 
-Gameplay carries most of the story. Show short labels, then clear the view. Installation and help graphics use aligned columns with consistent spacing. Avoid connection arrows and technology boxes.
+Gameplay carries most of the story. Clear the large titles after four seconds, then retain the small context label. Installation and help graphics use aligned columns with consistent spacing. Avoid connection arrows and technology boxes.
 
 The portrait cut has a separate script. Keep menus fully visible within their focus region. Use `portraitMenus` ranges for overlays during world shots. Keep subtitles and key actions away from platform controls.
 
@@ -40,7 +42,7 @@ Use a licensed instrumental and duck it under speech. Keep generated assets and 
 
 Deliver landscape and portrait MP4s, burned captions, SRT and VTT files, thumbnails, and posting descriptions. Keep descriptions focused on players, downloads, and bug reporting. Credit upstream work and production assets briefly.
 
-Run `bun run posting` and `bun run posting vertical` to export the upload package without rendering the MP4s again. The designed thumbnails use reviewed Galaxite model footage with the title "BEDROCK ON JAVA". Inspect each image at full size and at mobile preview size.
+Run `bun run posting` and `bun run posting vertical` to export the upload package without rendering the MP4s again. The designed thumbnails use reviewed Galaxite model footage with "BEDROCK SERVERS FROM JAVA" and a "Fabric client mod" label. Inspect each image at full size and at mobile preview size.
 
 Keep titles, introductions, and chapter group names in `src/publishing.ts`. Chapter timestamps come from the final timeline. Use useful player sections and merge short scenes so each chapter lasts at least ten seconds. The main description includes chapters. The Short uses its own title, introduction, and hashtags.
 

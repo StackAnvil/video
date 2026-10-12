@@ -12,6 +12,8 @@ Keep recordings, screenshots, private manifests, credentials, caches, and licens
 
 Verify claims against the owning patch and matching version. Show custom content only with footage of that content. Describe compatibility limits without promising complete Bedrock parity.
 
+Identify StackAnvil as a Fabric client mod in the opening sentence. Establish the Java client, Bedrock server connection, and account sign-in before the server tour. Connect each demonstration to what the mod enables. Review the script for product clarity before generating narration. Keep titles, thumbnails, and context labels consistent with that explanation.
+
 Generate narration before music. Use measured speech alignment for captions. Preserve transition overlap in the shared timeline. Never bypass final render readiness checks.
 
 Run `bun run check` and `bun run test`. Inspect scene and transition frames. Inspect the full audio and video before declaring a video ready for YouTube.

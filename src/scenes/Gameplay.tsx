@@ -75,21 +75,25 @@ export function Gameplay({
           {scene.label}
         </div>
       </div>
-      {vertical && framing !== "world" && (
-        <div
-          style={{
-            position: "absolute",
-            left: 64,
-            right: 100,
-            top: 1270,
-            fontSize: 37,
-            lineHeight: 1.3,
-            color: brand.mint,
-          }}
-        >
-          {scene.label}
-        </div>
-      )}
+      <div
+        style={{
+          position: "absolute",
+          left: vertical ? 64 : 58,
+          right: vertical ? 90 : undefined,
+          top: vertical ? 160 : 48,
+          opacity: interpolate(frame, [108, 118], [0, 1], {
+            extrapolateLeft: "clamp",
+            extrapolateRight: "clamp",
+          }),
+          fontSize: vertical ? 30 : 26,
+          lineHeight: 1.3,
+          backgroundColor: "rgba(24,35,30,0.8)",
+          padding: "12px 18px",
+          color: brand.paper,
+        }}
+      >
+        {scene.label}
+      </div>
     </AbsoluteFill>
   );
 }

@@ -61,15 +61,16 @@ export function Thumbnail({ production }: ThumbnailProps) {
           style={{
             position: "absolute",
             left: vertical ? 76 : 52,
-            top: vertical ? 215 : 220,
+            top: vertical ? 215 : 200,
             fontFamily: brand.display,
-            fontSize: vertical ? 218 : 138,
+            fontSize: vertical ? 158 : 112,
             lineHeight: 1.08,
             letterSpacing: -2,
           }}
         >
           <div>BEDROCK</div>
-          <div style={{ color: brand.mint }}>ON JAVA</div>
+          <div>SERVERS</div>
+          <div style={{ color: brand.mint }}>FROM JAVA</div>
         </div>
         <div
           style={{
@@ -81,7 +82,7 @@ export function Thumbnail({ production }: ThumbnailProps) {
             fontWeight: 600,
           }}
         >
-          CubeCraft + Galaxite
+          Fabric client mod
         </div>
       </div>
     </AbsoluteFill>

@@ -20,10 +20,10 @@ export const scenes: Scene[] = [
   {
     id: "hook",
     seconds: 10,
-    title: "Keep your Java client",
+    title: "StackAnvil: a Fabric client mod",
     narration:
-      "You don't need to switch clients to explore Bedrock servers. Stack Anvil brings them to your Java client.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Stack Anvil is a Fabric client mod that lets Minecraft Java Edition connect to Bedrock servers.",
+    label: "Java client · StackAnvil · CubeCraft Bedrock",
     evidence:
       "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -33,10 +33,10 @@ export const scenes: Scene[] = [
   {
     id: "cube-lobby",
     seconds: 10,
-    title: "CubeCraft's Bedrock network",
+    title: "Install in Java. Sign in with Bedrock.",
     narration:
-      "This is CubeCraft's Bedrock network. It runs separately from their Java server, with its own lobby and game lineup.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "You install it alongside ViaFabricPlus in your Java client, then sign in with your Bedrock account.",
+    label: "Java client · StackAnvil · CubeCraft Bedrock",
     evidence:
       "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -46,10 +46,10 @@ export const scenes: Scene[] = [
   {
     id: "cube-menu",
     seconds: 13,
-    title: "Choose Parkour",
+    title: "Join a Bedrock server from Java",
     narration:
-      "CubeCraft's own game selector works here too. Let's head into Parkour.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "This is CubeCraft's Bedrock network, joined from Java with that setup. Their own game selector opens, so let's pick Parkour.",
+    label: "Java client · StackAnvil · CubeCraft Bedrock",
     evidence:
       "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -59,10 +59,10 @@ export const scenes: Scene[] = [
   {
     id: "cube-play",
     seconds: 10,
-    title: "Run a Bedrock parkour course",
+    title: "CubeCraft Bedrock parkour, from Java",
     narration:
-      "This is a real Bedrock parkour course, loaded straight from CubeCraft. The rest is up to your timing.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "This is CubeCraft's Antarctica Parkour course, running on their Bedrock server while you play from Java.",
+    label: "Java client · StackAnvil · CubeCraft Bedrock",
     evidence:
       "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -72,10 +72,10 @@ export const scenes: Scene[] = [
   {
     id: "galaxite-lobby",
     seconds: 10,
-    title: "On to Galaxite",
+    title: "Galaxite through StackAnvil",
     narration:
-      "Next stop: Galaxite. A Bedrock lobby full of custom content, running in your Java client.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Now here's Stack Anvil on Galaxite, with its custom Bedrock lobby running in the same Java client.",
+    label: "Java client · StackAnvil · Galaxite",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -85,10 +85,10 @@ export const scenes: Scene[] = [
   {
     id: "galaxite-actors",
     seconds: 9,
-    title: "Custom models and animations",
+    title: "Bedrock models rendered in Java",
     narration:
-      "Those custom models and animations come from Galaxite's Bedrock resource pack.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "These custom models and animations come from Galaxite's Bedrock resource pack, which Stack Anvil loads in Java.",
+    label: "Java client · StackAnvil · Galaxite",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -98,10 +98,10 @@ export const scenes: Scene[] = [
   {
     id: "galaxite-menu",
     seconds: 12,
-    title: "Server-built menus",
+    title: "Bedrock server menus, from Java",
     narration:
-      "Galaxite's own game menus are usable too, including its artwork and game pages.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Galaxite's own game selector works too, with the artwork and game pages the server designed.",
+    label: "Java client · StackAnvil · Galaxite",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -113,7 +113,7 @@ export const scenes: Scene[] = [
     seconds: 5,
     title: "Custom held items",
     narration: "Custom item models, too.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Java client · StackAnvil · Galaxite",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -126,7 +126,7 @@ export const scenes: Scene[] = [
     title: "Emotes · B by default",
     narration:
       "Press B to open the emote wheel by default. Rebind it in Controls. Choose an emote from your Bedrock account.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Java client · StackAnvil · Bedrock emotes",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -138,8 +138,8 @@ export const scenes: Scene[] = [
     seconds: 16,
     title: "Character Creator",
     narration:
-      "The Character Creator opens with your saved slots and a full model preview, so you can try pieces on your Bedrock character without switching clients.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Since you signed in with a Bedrock account, the Character Creator opens with your saved slots and a full model preview, so you can browse pieces from Java.",
+    label: "Minecraft Java · StackAnvil",
     evidence:
       "Recorded Dressing Room, saved character slots, and hair/face piece previews",
     kind: "footage",
@@ -151,8 +151,8 @@ export const scenes: Scene[] = [
     seconds: 13,
     title: "Bedrock friends and parties",
     narration:
-      "The Bedrock social menus are here too. That means your friends list, incoming requests, parties, and the worlds your friends have open.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "The Bedrock social menus open in Java as well: your friends list, incoming requests, parties, and the worlds your friends have open.",
+    label: "Minecraft Java · StackAnvil",
     evidence: "Recorded Bedrock Friends, requests, worlds, and party menus",
     kind: "footage",
     clip: "friends",
@@ -161,10 +161,10 @@ export const scenes: Scene[] = [
   {
     id: "player-realms",
     seconds: 12,
-    title: "Realm menus",
+    title: "Realm menus in your Java client",
     narration:
-      "Your Realm list and the Realm Hub menus also open, including the world and settings pages. What appears depends on your account.",
-    label: "Realm list and Realm Hub menus",
+      "Your Realm list and the Realm Hub menus open too, including world and settings pages. What you see depends on your account.",
+    label: "Java client · StackAnvil · Realm Hub",
     evidence:
       "Recorded Realm list and Realm Hub world/settings menus; menus only",
     kind: "footage",
@@ -175,7 +175,7 @@ export const scenes: Scene[] = [
     id: "realm-community",
     seconds: 22,
     title: "Realm Community and Timeline",
-    label: "Economy SMP · Realm Hub",
+    label: "Java client · StackAnvil · Economy SMP",
     narration:
       "Community shows the Realm's recent events and posts, and Timeline charts weekly player activity, so you can catch up without leaving Java.",
     evidence:
@@ -202,7 +202,7 @@ export const scenes: Scene[] = [
     title: "Install the mods",
     narration:
       "Install Fabric Loader for the supported Minecraft version shown on the website. Next, download the Stack Anvil Bedrock Addon for ViaFabricPlus from CurseForge. Then get the matching ViaFabricPlus JAR from the same GitHub release the guide links to. Put both in your mods folder, and keep only one copy of ViaFabricPlus.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "install",
   },
@@ -212,7 +212,7 @@ export const scenes: Scene[] = [
     title: "Sign in and join",
     narration:
       "Launch Minecraft with Fabric, open Multiplayer, then ViaFabricPlus. Under Bedrock settings, choose Account for Bedrock Edition and finish signing in through your browser. Add the Bedrock server address, select the matching Bedrock version in ViaFabricPlus, and accept resource packs when the server asks.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "footage",
     clip: "connect",
@@ -224,7 +224,7 @@ export const scenes: Scene[] = [
     title: "Get help and report bugs",
     narration:
       "Stack Anvil is still experimental. Compatibility varies by server, and some resource packs render imperfectly. Join the Discord for help and to talk about bugs. To report one, open a GitHub issue with your versions, the server, and the steps to reproduce it.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "help",
   },
@@ -234,7 +234,7 @@ export const scenes: Scene[] = [
     title: "Pick a Bedrock server",
     narration:
       "Keep your Java client, and go see what Bedrock servers have built.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "outro",
   },
@@ -243,10 +243,10 @@ export const shortScenes: Scene[] = [
   {
     id: "hook-short",
     seconds: 9.1,
-    title: "Bedrock servers from Java",
+    title: "StackAnvil: a Fabric client mod",
     narration:
-      "You can join Bedrock servers from your Java client. This is Stack Anvil on CubeCraft's Bedrock network.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Stack Anvil is a Fabric mod that lets Minecraft Java join Bedrock servers, like CubeCraft.",
+    label: "Java client · StackAnvil · CubeCraft Bedrock",
     evidence:
       "Fresh CubeCraft Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -256,10 +256,10 @@ export const shortScenes: Scene[] = [
   {
     id: "galaxite-short",
     seconds: 10,
-    title: "Galaxite models and menus",
+    title: "Galaxite through StackAnvil",
     narration:
-      "On Galaxite, the custom models, the animations, and the server's own menus all show up.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+      "Stack Anvil also loads Galaxite's custom models, animations, and server menus in Java.",
+    label: "Java client · StackAnvil · Galaxite",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -272,7 +272,7 @@ export const shortScenes: Scene[] = [
     title: "Emotes · B by default",
     narration:
       "Press B to open the emote wheel by default. Use the emotes your Bedrock account owns.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence:
       "Fresh Galaxite Bedrock recording in the Java Fabric client, October 11 2026",
     kind: "footage",
@@ -283,7 +283,7 @@ export const shortScenes: Scene[] = [
     id: "realm-short",
     seconds: 9,
     title: "Realm Community and Timeline",
-    label: "Economy SMP · Realm Hub",
+    label: "Java client · StackAnvil · Economy SMP",
     narration:
       "Community shows the Realm's recent events and posts, and Timeline charts weekly player activity.",
     evidence:
@@ -298,7 +298,7 @@ export const shortScenes: Scene[] = [
     title: "Two mods",
     narration:
       "Install Fabric Loader. Then add the Stack Anvil Bedrock Addon from CurseForge and the matching ViaFabricPlus from the linked GitHub release. Both go in your mods folder.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "install",
   },
@@ -308,7 +308,7 @@ export const shortScenes: Scene[] = [
     title: "Try it and report bugs",
     narration:
       "The guide is at Stack Anvil dot pistonmaster dot net. It's experimental, so ask in Discord or report bugs on GitHub.",
-    label: "Minecraft Java Edition · StackAnvil Bedrock add-on",
+    label: "Minecraft Java · StackAnvil",
     evidence: "site/getting-started.md and current player guide",
     kind: "help",
   },

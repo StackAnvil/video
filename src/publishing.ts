@@ -5,13 +5,11 @@ export const publishing: Record<
   { title: string; intro: string; chapters: Record<string, string> }
 > = {
   landscape: {
-    title:
-      "Minecraft Java on Bedrock Servers: CubeCraft and Galaxite | StackAnvil",
+    title: "Play Bedrock Servers from Minecraft Java | StackAnvil Fabric Mod",
     intro:
-      "Keep your Minecraft Java client and explore Bedrock server content. Watch StackAnvil on CubeCraft's Bedrock network and Galaxite, with parkour, custom models, animations, server menus and items. Then try Bedrock emotes, Character Creator, friends and party menus, and Economy SMP's Realm Community feed and Timeline. The video also covers the Fabric mod downloads and signing in. Realm footage shows menus only.",
+      "StackAnvil is a Fabric client mod that lets Minecraft Java Edition connect to Bedrock servers. This showcase follows a Java client through CubeCraft Bedrock and Galaxite, demonstrating parkour, custom models, animations, server menus and items. It also shows Bedrock emotes, Character Creator, friends and party menus, and Economy SMP's Realm Community feed and Timeline. Follow the website guide to install the add-on with matching ViaFabricPlus and sign in. Realm footage shows menus only.",
     chapters: {
-      hook: "CubeCraft Bedrock from Minecraft Java",
-      "cube-menu": "CubeCraft's game selector",
+      hook: "What StackAnvil does: a Fabric client mod",
       "cube-play": "Bedrock parkour",
       "galaxite-lobby": "Galaxite: custom models, menus and items",
       "player-emote": "Emotes: B by default",
@@ -26,9 +24,9 @@ export const publishing: Record<
     },
   },
   vertical: {
-    title: "Minecraft Java on Bedrock Servers, Quick Look | StackAnvil #Shorts",
+    title: "Bedrock Servers from Minecraft Java: StackAnvil Fabric Mod #Shorts",
     intro:
-      "Bedrock server content, your Minecraft Java client. A quick look at CubeCraft Bedrock, Galaxite's custom models and menus, the emote wheel on B by default, and Realm Community and Timeline pages. Install the Fabric add-on with matching ViaFabricPlus. Ask in Discord or report bugs on GitHub.",
+      "StackAnvil is a Fabric client mod that connects Minecraft Java Edition to Bedrock servers. See it running CubeCraft Bedrock, Galaxite's custom models and menus, the emote wheel on B by default, and Realm Community and Timeline pages. Install the add-on with matching ViaFabricPlus. Ask in Discord or report bugs on GitHub.",
     chapters: {},
   },
 };
