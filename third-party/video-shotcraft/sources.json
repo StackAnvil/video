@@ -1,0 +1,28 @@
+{
+  "repository": "https://github.com/Vincentwei1021/video-shotcraft",
+  "revision": "43bd349a136651865ecfa6ea1cf012f6e957d304",
+  "retrieved": "2026-10-20",
+  "license": "Apache-2.0",
+  "sources": [
+    {
+      "recipe": "blur-slide",
+      "source": "demos/typography/blur-slide/BlurSlide.tsx",
+      "sha256": "4e7227b050b4f9fdd0c8762f308aaf2a152f8c476fa3e11efe84b3a23cc43a91"
+    },
+    {
+      "recipe": "title-demote-to-label",
+      "source": "demos/typography/title-demote-to-label/TitleDemoteToLabel.tsx",
+      "sha256": "5448cdf76c9eb57ebc4de46ae0f2e9bd399275e9600181afb26fe5dfbf0eeff5"
+    },
+    {
+      "recipe": "bottom-push-stack-wipe",
+      "source": "demos/transition/bottom-push-stack-wipe/BottomPushStackWipe.tsx",
+      "sha256": "3f4e2e20d972e436031a4ca05c93bb40e8bc907e854b15d4c534345f6fdb23e9"
+    },
+    {
+      "recipe": "logo-shrink-wordmark-lockup",
+      "source": "demos/outro/logo-shrink-wordmark-lockup/LogoShrinkWordmarkLockup.tsx",
+      "sha256": "2420827d399e0d72d88bdaa3d7ab1b7a79d506579bafdb1b962fbac0abfcb6a9"
+    }
+  ]
+}

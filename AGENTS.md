@@ -33,3 +33,7 @@ Treat the upload package as part of every finished video. An MP4 alone is not a 
 - Preserve the requested visibility. Verify the saved title, description, chapters, thumbnail, caption track, channel, and visibility in Studio. Record video links and upload receipts in ignored local files.
 
 Write Conventional Commit messages. Add a body for non-trivial changes. Never bypass hooks. Never create a new branch without the user's instruction.
+
+## Shotcraft
+
+Read `docs/shotcraft.md` before using Video Shotcraft recipes. Use the local Shotcraft components before adapting another demo. Preserve the existing production and evidence checks. The Shotcraft samplers are motion studies, not final delivery compositions.

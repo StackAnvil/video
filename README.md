@@ -100,3 +100,13 @@ Before uploading, watch the full render. Listen for clipped speech, weak music b
 The source code uses GPL-3.0-or-later. The local music generator produces an original CC0 score. Tracks generated with Eleven Music follow the applicable ElevenLabs music terms, recorded in the private manifest. Fonts retain their package licenses. Narration rights depend on the ElevenLabs account plan.
 
 Minecraft footage and included server artwork retain their owners' rights. Read the [Minecraft usage guidelines](https://www.minecraft.net/en-us/usage-guidelines) and any server restrictions before publishing. Keep account data and licensed resource exports private.
+
+## Shotcraft motion studies
+
+Open the `Shotcraft` folder in Studio for landscape and portrait previews.
+The [integration guide](docs/shotcraft.md) covers the components, source attribution, and production requirements.
+
+```bash
+bun run shotcraft:inspect
+bun run shotcraft:render
+```

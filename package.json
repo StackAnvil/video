@@ -29,6 +29,8 @@
     "typescript": "5.9.3"
   },
   "scripts": {
+    "shotcraft:inspect": "bun scripts/shotcraft.ts inspect",
+    "shotcraft:render": "bun scripts/shotcraft.ts render",
     "prepare": "lefthook install",
     "dev": "bun scripts/produce.ts studio",
     "build": "remotion bundle src/index.ts",

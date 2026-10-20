@@ -1,3 +1,4 @@
+import { ShotcraftLibrary } from "./shotcraft";
 import { Composition, Still } from "remotion";
 import { Showcase } from "./Showcase";
 import { FPS, type Edition } from "./config";
@@ -9,6 +10,7 @@ import "@fontsource-variable/space-grotesk";
 export const RemotionRoot: React.FC = () => {
   return (
     <>
+      <ShotcraftLibrary />
       {(["landscape", "vertical"] as const).map((edition: Edition) => (
         <Composition
           key={edition}
