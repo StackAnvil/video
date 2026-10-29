@@ -37,3 +37,9 @@ Write Conventional Commit messages. Add a body for non-trivial changes. Never by
 ## Shotcraft
 
 Read `docs/shotcraft.md` before using Video Shotcraft recipes. Use the local Shotcraft components before adapting another demo. Preserve the existing production and evidence checks. The Shotcraft samplers are motion studies, not final delivery compositions.
+
+## React conventions
+
+- Use PascalCase for React component names. Match the existing component filename convention.
+- Use kebab-case for new hook and utility filenames, unless this repository documents another convention.
+- Use stable domain identities as React keys. Do not use array indexes as keys.
