@@ -14,7 +14,7 @@
 
 Use Bun and TypeScript. Read `docs/production.md` before changing a showcase. Read `docs/features.md` for filming candidates.
 
-Use the Remotion skills for compositions, narration, captions, transitions, and rendering. Use frontend-design and uncodixfy for visual work.
+Use the Remotion skills for compositions, narration, captions, transitions, and rendering. Use frontend-design for visual work.
 
 Keep major scenes in separate files. Drive motion from frames. Preserve the site's forest, mint, rust, and paper colors.
 
