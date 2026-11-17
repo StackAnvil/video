@@ -1,6 +1,7 @@
+import { createHash } from "node:crypto";
 import { mkdir, rename } from "node:fs/promises";
 import { resolve } from "node:path";
-import { createHash } from "node:crypto";
+
 import { emptyProduction, type Production } from "../src/production";
 
 export const root = resolve(import.meta.dirname, "..");

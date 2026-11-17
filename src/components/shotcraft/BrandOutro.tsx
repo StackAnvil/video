@@ -5,8 +5,13 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { characters, progress, PUSH_FRAMES } from "./timing";
+
 import { shotcraftTheme as theme } from "./theme";
+import { characters, progress, PUSH_FRAMES } from "./timing";
+
+function quad(value: number) {
+  return value ** 2;
+}
 
 // Adapted from logo-shrink-wordmark-lockup. The mark never rotates with the ring.
 export function BrandOutro({
@@ -23,7 +28,6 @@ export function BrandOutro({
   const portrait = height > width;
   const t = frame / 131;
   const cubic = Easing.inOut((value: number) => value ** 3);
-  const quad = (value: number) => value ** 2;
   const outCubic = Easing.out((value: number) => value ** 3);
   const letters = characters(name);
   const scale =

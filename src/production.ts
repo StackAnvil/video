@@ -1,5 +1,5 @@
 import type { Caption } from "@remotion/captions";
-import { publishing } from "./publishing";
+
 import {
   FPS,
   scenesFor,
@@ -8,6 +8,7 @@ import {
   VOICE_TAIL,
   type Edition,
 } from "./config";
+import { publishing } from "./publishing";
 
 export interface Focus {
   x: number;

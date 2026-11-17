@@ -1,8 +1,9 @@
-import { ShotcraftLibrary } from "./shotcraft";
 import { Composition, Still } from "remotion";
-import { Showcase } from "./Showcase";
+
 import { FPS, type Edition } from "./config";
 import { duration, emptyProduction } from "./production";
+import { ShotcraftLibrary } from "./shotcraft";
+import { Showcase } from "./Showcase";
 import { Thumbnail } from "./Thumbnail";
 import "@fontsource/anton";
 import "@fontsource-variable/space-grotesk";

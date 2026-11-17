@@ -1,5 +1,6 @@
 import type { CSSProperties } from "react";
 import { useCurrentFrame, useVideoConfig } from "remotion";
+
 import { progress } from "./timing";
 
 // Adapted from demos/typography/blur-slide/BlurSlide.tsx (Apache-2.0).

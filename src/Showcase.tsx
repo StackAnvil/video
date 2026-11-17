@@ -1,7 +1,7 @@
-import { Fragment } from "react";
 import { Audio } from "@remotion/media";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { fade } from "@remotion/transitions/fade";
+import { Fragment } from "react";
 import {
   AbsoluteFill,
   interpolate,
@@ -10,13 +10,14 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+
 import { brand } from "./brand";
 import { Captions } from "./components/Captions";
 import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "./config";
 import { timeline, type VideoProps } from "./production";
 import { Gameplay } from "./scenes/Gameplay";
-import { PlayerGuide } from "./scenes/PlayerGuide";
 import { Outro } from "./scenes/Outro";
+import { PlayerGuide } from "./scenes/PlayerGuide";
 
 export function Showcase({ production, captions, draft, edition }: VideoProps) {
   const frame = useCurrentFrame();

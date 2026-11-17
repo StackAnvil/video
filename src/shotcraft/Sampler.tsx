@@ -1,17 +1,18 @@
-import { Easing } from "remotion";
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
-import { ChapterFocus } from "../components/shotcraft/ChapterFocus";
-import { BrandOutro } from "../components/shotcraft/BrandOutro";
+import { Easing } from "remotion";
+
 import { bottomPush } from "../components/shotcraft/BottomPush";
+import { BrandOutro } from "../components/shotcraft/BrandOutro";
+import { ChapterFocus } from "../components/shotcraft/ChapterFocus";
 import {
   FOCUS_FRAMES,
   OUTRO_FRAMES,
   PUSH_FRAMES,
   TITLE_FRAMES,
 } from "../components/shotcraft/timing";
-import { IntroScene } from "./IntroScene";
-import { FocusContent } from "./FocusContent";
 import { SamplerMark } from "./BrandMark";
+import { FocusContent } from "./FocusContent";
+import { IntroScene } from "./IntroScene";
 
 export function ShotcraftSampler() {
   return (

@@ -1,5 +1,6 @@
 import { Video } from "@remotion/media";
 import { AbsoluteFill, staticFile, useVideoConfig } from "remotion";
+
 import { brand } from "./brand";
 import { BrandMark } from "./components/BrandMark";
 import type { Production } from "./production";

@@ -1,4 +1,5 @@
 import { Composition, Folder } from "remotion";
+
 import { SAMPLER_FRAMES, SHOTCRAFT_FPS } from "../components/shotcraft/timing";
 import { ShotcraftSampler } from "./Sampler";
 

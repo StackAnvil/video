@@ -1,5 +1,6 @@
-import { useCurrentFrame, useVideoConfig } from "remotion";
 import type { Caption } from "@remotion/captions";
+import { useCurrentFrame, useVideoConfig } from "remotion";
+
 import { brand } from "../brand";
 
 export function Captions({ captions }: { captions: Caption[] }) {

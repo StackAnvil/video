@@ -4,6 +4,7 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+
 import { brand } from "../brand";
 import type { Scene } from "../config";
 

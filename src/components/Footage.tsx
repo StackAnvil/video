@@ -1,6 +1,7 @@
 import { Video } from "@remotion/media";
 import { AbsoluteFill, useVideoConfig } from "remotion";
 import { staticFile } from "remotion";
+
 import { brand } from "../brand";
 import type { Clip, Focus } from "../production";
 

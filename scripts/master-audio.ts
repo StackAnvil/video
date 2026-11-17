@@ -1,4 +1,5 @@
 import { rename } from "node:fs/promises";
+
 import { run } from "./io";
 
 export async function masterAudio(path: string) {
@@ -25,7 +26,7 @@ export async function masterAudio(path: string) {
   ]);
   const report = stderr.match(/\{[^{}]+\}/)?.[0];
   if (code !== 0 || !report) throw new Error("Audio loudness analysis failed");
-  const measured = JSON.parse(report) as Record<string, string>;
+  const measured: Record<string, string> = JSON.parse(report);
   const parameters = {
     measured_I: measured.input_i,
     measured_TP: measured.input_tp,

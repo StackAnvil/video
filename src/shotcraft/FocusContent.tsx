@@ -1,4 +1,5 @@
 import { useVideoConfig } from "remotion";
+
 import { shotcraftTheme as theme } from "../components/shotcraft/theme";
 export function FocusContent() {
   const { width, height } = useVideoConfig();

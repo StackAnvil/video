@@ -1,5 +1,6 @@
 import type { TransitionPresentationComponentProps } from "@remotion/transitions";
 import { AbsoluteFill } from "remotion";
+
 import { pushOffset } from "./timing";
 
 // Adapted from bottom-push-stack-wipe. Both panels share one eased progress.

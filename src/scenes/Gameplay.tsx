@@ -4,10 +4,11 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
+
 import { brand } from "../brand";
 import { Footage } from "../components/Footage";
-import type { Clip } from "../production";
 import { FPS, type Scene } from "../config";
+import type { Clip } from "../production";
 export function Gameplay({
   clip,
   scene,

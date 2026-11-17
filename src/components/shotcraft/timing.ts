@@ -32,8 +32,8 @@ export function progress(
   });
 }
 
-export function chapterTiming(characters: number) {
-  const revealEnd = Math.max(0, characters - 1) * 1.6 + 16;
+export function chapterTiming(characterCount: number) {
+  const revealEnd = Math.max(0, characterCount - 1) * 1.6 + 16;
   const demote = revealEnd + 20;
   return { revealEnd, demote, content: demote + 12, settled: demote + 26 };
 }

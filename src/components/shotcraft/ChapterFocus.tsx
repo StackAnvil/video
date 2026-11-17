@@ -5,8 +5,9 @@ import {
   useCurrentFrame,
   useVideoConfig,
 } from "remotion";
-import { characters, chapterTiming, progress, PUSH_FRAMES } from "./timing";
+
 import { shotcraftTheme as theme } from "./theme";
+import { characters, chapterTiming, progress, PUSH_FRAMES } from "./timing";
 
 // Adapted from title-demote-to-label, variant A. Content stays on its own clock.
 export function ChapterFocus({

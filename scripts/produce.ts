@@ -1,11 +1,13 @@
 import { resolve, isAbsolute, relative } from "node:path";
+
 import { bundle } from "@remotion/bundler";
+import type { Caption } from "@remotion/captions";
 import {
   renderMedia,
   renderStill,
   selectComposition,
 } from "@remotion/renderer";
-import type { Caption } from "@remotion/captions";
+
 import {
   FPS,
   scenes,
@@ -19,12 +21,12 @@ import {
   timeline,
   type VideoProps,
 } from "../src/production";
+import { publishing } from "../src/publishing";
 import { subtitles } from "./caption-timing";
 import { directory, hash, load, mediaDuration, root, run, save } from "./io";
-import { music } from "./music";
 import { masterAudio } from "./master-audio";
+import { music } from "./music";
 import { voiceover } from "./voiceover";
-import { publishing } from "../src/publishing";
 
 async function verify(edition: Edition = "landscape") {
   const production = await load();

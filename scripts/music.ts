@@ -1,7 +1,8 @@
-import { duration } from "../src/production";
-import { FPS } from "../src/config";
-import { directory, hash, load, mediaDuration, root, run, save } from "./io";
 import { resolve } from "node:path";
+
+import { FPS } from "../src/config";
+import { duration } from "../src/production";
+import { directory, hash, load, mediaDuration, root, run, save } from "./io";
 
 export async function music(mode = process.env.STACKANVIL_MUSIC ?? "original") {
   if (mode === "elevenlabs") return generatedMusic();

@@ -1,5 +1,6 @@
 import { describe, expect, test } from "bun:test";
-import { alignedCaptions, subtitles } from "./caption-timing";
+
+import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "../src/config";
 import {
   duration,
   chapters,
@@ -7,7 +8,7 @@ import {
   readiness,
   timeline,
 } from "../src/production";
-import { FPS, TRANSITION, VOICE_DELAY, VOICE_TAIL } from "../src/config";
+import { alignedCaptions, subtitles } from "./caption-timing";
 
 describe("production timing", () => {
   test("adjacent scenes overlap only by the transition duration", () => {

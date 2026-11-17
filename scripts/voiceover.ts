@@ -1,4 +1,5 @@
 import { resolve } from "node:path";
+
 import { scenes, shortScenes } from "../src/config";
 import { alignedCaptions, type Alignment } from "./caption-timing";
 import { directory, hash, load, mediaDuration, root, run, save } from "./io";
@@ -69,7 +70,7 @@ export async function voiceover(
     const spoken = alignment.characters.join("");
     const characters = [...alignment.characters];
     for (const tag of spoken.matchAll(/\[[^\]]+\]/g))
-      for (let i = tag.index!; i < tag.index! + tag[0].length; i++)
+      for (let i = tag.index; i < tag.index + tag[0].length; i++)
         characters[i] = " ";
     const captions = alignedCaptions({ ...alignment, characters }).map(
       (caption) => ({

@@ -1,4 +1,5 @@
 import { AbsoluteFill, useVideoConfig } from "remotion";
+
 import { brand } from "../brand";
 import { BrandMark } from "../components/BrandMark";
 

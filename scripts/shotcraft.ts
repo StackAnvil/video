@@ -1,11 +1,13 @@
 import { mkdir } from "node:fs/promises";
 import { resolve } from "node:path";
+
 import {
   getCompositions,
   openBrowser,
   renderMedia,
   renderStill,
 } from "@remotion/renderer";
+
 import {
   samplerShots,
   SAMPLER_FRAMES,

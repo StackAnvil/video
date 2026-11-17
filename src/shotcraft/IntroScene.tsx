@@ -1,4 +1,5 @@
 import { AbsoluteFill, useVideoConfig } from "remotion";
+
 import { BlurTitle } from "../components/shotcraft/BlurTitle";
 import { shotcraftTheme as theme } from "../components/shotcraft/theme";
 import { SamplerMark } from "./BrandMark";
