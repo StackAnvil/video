@@ -1,0 +1,18 @@
+{
+  "$schema": "./node_modules/oxfmt/configuration_schema.json",
+  "useTabs": false,
+  "bracketSpacing": true,
+  "tabWidth": 2,
+  "printWidth": 80,
+  "sortPackageJson": false,
+  "sortImports": true,
+  "ignorePatterns": [
+    "bun.lock",
+    ".cache/**",
+    "out/**",
+    "build/**",
+    "dist/**",
+    "public/**",
+    "third-party/**"
+  ]
+}
