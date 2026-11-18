@@ -1,11 +1,15 @@
-import { rename } from "node:fs/promises";
+import { Effect, Schema } from "effect";
 
-import { run } from "./io";
+import { decode, fail, io, move, run, spawn } from "./io";
 
-export async function masterAudio(path: string) {
+const Loudness = Schema.fromJsonString(
+  Schema.Record(Schema.String, Schema.String),
+);
+
+export const masterAudio = Effect.fnUntraced(function* (path: string) {
   // Leave headroom for true-peak overshoot during AAC encoding.
   const target = "loudnorm=I=-16:TP=-1.8:LRA=11";
-  const analysis = Bun.spawn(
+  const analysis = yield* spawn(
     [
       "ffmpeg",
       "-nostdin",
@@ -20,13 +24,16 @@ export async function masterAudio(path: string) {
     ],
     { stdout: "ignore", stderr: "pipe" },
   );
-  const [stderr, code] = await Promise.all([
-    new Response(analysis.stderr).text(),
-    analysis.exited,
-  ]);
+  const [stderr, code] = yield* io("Audio loudness analysis", () =>
+    Promise.all([new Response(analysis.stderr).text(), analysis.exited]),
+  );
   const report = stderr.match(/\{[^{}]+\}/)?.[0];
-  if (code !== 0 || !report) throw new Error("Audio loudness analysis failed");
-  const measured: Record<string, string> = JSON.parse(report);
+  if (code !== 0 || !report)
+    return yield* fail("Audio loudness analysis failed");
+  const measured = yield* decode(
+    Loudness,
+    "Audio loudness analysis is malformed",
+  )(report);
   const parameters = {
     measured_I: measured.input_i,
     measured_TP: measured.input_tp,
@@ -37,14 +44,14 @@ export async function masterAudio(path: string) {
   if (
     Object.values(parameters).some((value) => !Number.isFinite(Number(value)))
   )
-    throw new Error("Audio loudness measurements are invalid");
+    return yield* fail("Audio loudness measurements are invalid");
   const filter = [
     target,
     ...Object.entries(parameters).map(([key, value]) => `${key}=${value}`),
     "linear=true",
   ].join(":");
   const temporary = path.replace(/\.mp4$/, ".master.tmp.mp4");
-  await run([
+  yield* run([
     "ffmpeg",
     "-nostdin",
     "-y",
@@ -70,6 +77,7 @@ export async function masterAudio(path: string) {
     "+faststart",
     temporary,
   ]);
-  await rename(temporary, path);
+  yield* move(temporary, path);
   process.stdout.write("Audio mastered: -16 LUFS target, AAC peak headroom\n");
-}
+  return undefined;
+}, Effect.scoped);

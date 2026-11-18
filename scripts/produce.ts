@@ -7,6 +7,7 @@ import {
   renderStill,
   selectComposition,
 } from "@remotion/renderer";
+import { Effect } from "effect";
 
 import {
   FPS,
@@ -23,13 +24,28 @@ import {
 } from "../src/production";
 import { publishing } from "../src/publishing";
 import { subtitles } from "./caption-timing";
-import { directory, hash, load, mediaDuration, root, run, save } from "./io";
+import {
+  directory,
+  exists,
+  fail,
+  hash,
+  io,
+  load,
+  main,
+  mediaDuration,
+  move,
+  root,
+  run,
+  save,
+  spawn,
+  write,
+} from "./io";
 import { masterAudio } from "./master-audio";
 import { music } from "./music";
 import { voiceover } from "./voiceover";
 
-async function verify(edition: Edition = "landscape") {
-  const production = await load();
+const verify = Effect.fnUntraced(function* (edition: Edition = "landscape") {
+  const production = yield* load();
   const failures = readiness(production, edition);
   const assets = [
     ...Object.values(production.clips),
@@ -43,18 +59,18 @@ async function verify(edition: Edition = "landscape") {
       failures.push(`Media path outside public/media: ${asset.file}`);
       continue;
     }
-    if (!(await Bun.file(path).exists()))
-      failures.push(`Missing file: ${asset.file}`);
-    else if ((await hash(path)) !== asset.sha256)
+    if (!(yield* exists(path))) failures.push(`Missing file: ${asset.file}`);
+    else if ((yield* hash(path)) !== asset.sha256)
       failures.push(`Media changed after review: ${asset.file}`);
   }
-  if (failures.length) throw new Error(failures.join("\n"));
+  if (failures.length) return yield* fail(failures.join("\n"));
   process.stdout.write(
     "All required footage, narration, captions, and music are ready\n",
   );
-}
+  return undefined;
+});
 
-async function footage(args: string[]) {
+const footage = Effect.fnUntraced(function* (args: string[]) {
   const [id, source, startText, secondsText, ...provenance] = args;
   if (
     ![...scenes, ...shortScenes].some(
@@ -63,7 +79,7 @@ async function footage(args: string[]) {
     !source ||
     !provenance.length
   )
-    throw new Error(
+    return yield* fail(
       'Usage: bun run footage <clip-id> <source.mp4> <start-seconds> <duration-seconds> "provenance"',
     );
   const start = Number(startText);
@@ -74,16 +90,16 @@ async function footage(args: string[]) {
     !Number.isFinite(seconds) ||
     seconds <= 0
   )
-    throw new Error("Invalid clip range");
+    return yield* fail("Invalid clip range");
   const input = resolve(source);
-  if (start + seconds > (await mediaDuration(input)) + 0.03)
-    throw new Error("Clip range exceeds source duration");
-  const production = await load();
-  await directory("public/media/footage");
+  if (start + seconds > (yield* mediaDuration(input)) + 0.03)
+    return yield* fail("Clip range exceeds source duration");
+  const production = yield* load();
+  yield* directory("public/media/footage");
   const file = `media/footage/${id}.mp4`;
   const output = resolve(root, "public", file);
   const temporary = output.replace(/\.mp4$/, ".tmp.mp4");
-  await run([
+  yield* run([
     "ffmpeg",
     "-nostdin",
     "-y",
@@ -108,27 +124,27 @@ async function footage(args: string[]) {
     "+faststart",
     temporary,
   ]);
-  const { rename } = await import("node:fs/promises");
-  await rename(temporary, output);
+  yield* move(temporary, output);
   production.clips[id] = {
     file,
-    sha256: await hash(output),
-    duration: await mediaDuration(output),
+    sha256: yield* hash(output),
+    duration: yield* mediaDuration(output),
     reviewed: false,
     provenance: provenance.join(" "),
     recordedAt: new Date().toISOString(),
   };
-  await save(production);
+  yield* save(production);
   process.stdout.write(
     `Imported ${id}. Review the entire trimmed clip, then run bun run review ${id}.\n`,
   );
-}
+  return undefined;
+});
 
-async function exportCaptionsAndMetadata(
+const exportCaptionsAndMetadata = Effect.fnUntraced(function* (
   production: VideoProps["production"],
   edition: Edition,
 ) {
-  await directory("out");
+  yield* directory("out");
   const prefix = edition === "vertical" ? "showcase-vertical" : "showcase";
   const captions: Caption[] = timeline(production, edition).flatMap(
     ({ scene, start }) =>
@@ -139,12 +155,9 @@ async function exportCaptionsAndMetadata(
         endMs: caption.endMs + ((start + VOICE_DELAY) / FPS) * 1000,
       })),
   );
-  await Bun.write(resolve(root, `out/${prefix}.srt`), subtitles(captions));
-  await Bun.write(
-    resolve(root, `out/${prefix}.vtt`),
-    subtitles(captions, true),
-  );
-  await Bun.write(
+  yield* write(resolve(root, `out/${prefix}.srt`), subtitles(captions));
+  yield* write(resolve(root, `out/${prefix}.vtt`), subtitles(captions, true));
+  yield* write(
     resolve(root, `out/${prefix}.captions.json`),
     JSON.stringify(captions, null, 2),
   );
@@ -155,7 +168,7 @@ async function exportCaptionsAndMetadata(
         `${String(Math.floor(seconds / 60)).padStart(2, "0")}:${String(seconds % 60).padStart(2, "0")} ${title}`,
     )
     .join("\n");
-  await Bun.write(
+  yield* write(
     resolve(
       root,
       edition === "vertical"
@@ -164,71 +177,77 @@ async function exportCaptionsAndMetadata(
     ),
     `${metadata.title}\n\n${metadata.intro}\n\nGet StackAnvil\nPlayer guide: https://stackanvil.pistonmaster.net/getting-started/\nWebsite: https://stackanvil.pistonmaster.net/\nFabric add-on on CurseForge: https://www.curseforge.com/minecraft/mc-mods/stackanvil-bedrock-addon-for-viafabricplus\nMatching ViaFabricPlus and add-on release: https://github.com/StackAnvil/patches/releases/latest\n\nHelp and bug reports\nDiscord: https://pistonmaster.net/discord\nGitHub issues: https://github.com/StackAnvil/patches/issues\nInclude your Minecraft and mod versions, server, steps to reproduce, expected result and what happened. Remove private account details from screenshots and logs.\n\n${edition === "landscape" ? `Chapters\n${chapterText}` : "#Minecraft #StackAnvil #Bedrock #JavaEdition"}\n\nStackAnvil is experimental. Compatibility varies by server and game version, and some resource packs have rendering limitations. B is the default emote key and can be rebound in Controls. Independent project, not an official Minecraft or ViaVersion release. Built on ViaFabricPlus and ViaBedrock.\nAI narration: ElevenLabs Liam, Eleven v4. Script rewritten with Claude Opus 5.5 at high effort. Music: ${production.music?.license ?? "No music supplied"}.\nMinecraft gameplay: https://www.minecraft.net/en-us/usage-guidelines\n`,
   );
-}
+});
 
-async function thumbnail(
+const bundleVideo = io("Bundle the Remotion project", () =>
+  bundle({
+    entryPoint: resolve(root, "src/index.ts"),
+    publicDir: resolve(root, "public"),
+  }),
+);
+
+const thumbnail = Effect.fnUntraced(function* (
   production: VideoProps["production"],
   edition: Edition,
   serveUrl?: string,
 ) {
   const clip = production.clips["galaxite-actors"];
   if (!clip?.reviewed || clip.duration < 3.1)
-    throw new Error("Thumbnail needs reviewed Galaxite model footage");
-  await directory("out/review");
-  const url =
-    serveUrl ??
-    (await bundle({
-      entryPoint: resolve(root, "src/index.ts"),
-      publicDir: resolve(root, "public"),
-    }));
+    return yield* fail("Thumbnail needs reviewed Galaxite model footage");
+  yield* directory("out/review");
+  const url = serveUrl ?? (yield* bundleVideo);
   const inputProps = { production };
-  const composition = await selectComposition({
-    serveUrl: url,
-    id:
-      edition === "landscape"
-        ? "StackAnvilThumbnail"
-        : "StackAnvilShortThumbnail",
-    inputProps,
-  });
+  const composition = yield* io("Select the thumbnail composition", () =>
+    selectComposition({
+      serveUrl: url,
+      id:
+        edition === "landscape"
+          ? "StackAnvilThumbnail"
+          : "StackAnvilShortThumbnail",
+      inputProps,
+    }),
+  );
   const name = edition === "vertical" ? "thumbnail-vertical" : "thumbnail";
   for (const [scale, output] of [
     [1, `out/${name}.jpg`],
     [1 / 12, `out/review/${name}-mobile.jpg`],
   ] as const)
-    await renderStill({
-      serveUrl: url,
-      composition,
-      inputProps,
-      frame: 0,
-      imageFormat: "jpeg",
-      jpegQuality: 90,
-      scale,
-      output: resolve(root, output),
-    });
-}
+    yield* io(`Render ${output}`, () =>
+      renderStill({
+        serveUrl: url,
+        composition,
+        inputProps,
+        frame: 0,
+        imageFormat: "jpeg",
+        jpegQuality: 90,
+        scale,
+        output: resolve(root, output),
+      }),
+    );
+  return undefined;
+});
 
-async function render(
+const render = Effect.fnUntraced(function* (
   mode: "preview" | "render" | "inspect",
   edition: Edition,
 ) {
-  if (mode === "render") await verify(edition);
-  const production = await load();
+  if (mode === "render") yield* verify(edition);
+  const production = yield* load();
   const inputProps: VideoProps = {
     production,
     captions: true,
     draft: mode !== "render",
     edition,
   };
-  await directory("out/review");
-  const serveUrl = await bundle({
-    entryPoint: resolve(root, "src/index.ts"),
-    publicDir: resolve(root, "public"),
-  });
-  const composition = await selectComposition({
-    serveUrl,
-    id: edition === "vertical" ? "StackAnvilShort" : "StackAnvilShowcase",
-    inputProps,
-  });
+  yield* directory("out/review");
+  const serveUrl = yield* bundleVideo;
+  const composition = yield* io("Select the video composition", () =>
+    selectComposition({
+      serveUrl,
+      id: edition === "vertical" ? "StackAnvilShort" : "StackAnvilShowcase",
+      inputProps,
+    }),
+  );
   if (mode === "inspect") {
     for (const { scene, start, frames } of timeline(production, edition)) {
       for (const [label, frame] of [
@@ -236,17 +255,19 @@ async function render(
         ["middle", start + Math.floor(frames / 2)],
         ["end", start + frames - 1],
       ] as const)
-        await renderStill({
-          serveUrl,
-          composition,
-          inputProps,
-          frame,
-          output: resolve(root, `out/review/${scene.id}-${label}.png`),
-          scale: 0.5,
-        });
+        yield* io(`Render ${scene.id} ${label} frame`, () =>
+          renderStill({
+            serveUrl,
+            composition,
+            inputProps,
+            frame,
+            output: resolve(root, `out/review/${scene.id}-${label}.png`),
+            scale: 0.5,
+          }),
+        );
     }
     if (production.clips["galaxite-actors"]?.reviewed)
-      await thumbnail(production, edition, serveUrl);
+      yield* thumbnail(production, edition, serveUrl);
     process.stdout.write("Scene and transition frames: out/review\n");
   } else {
     let last = -1;
@@ -254,75 +275,77 @@ async function render(
       root,
       `out/showcase${edition === "vertical" ? "-vertical" : ""}${mode === "preview" ? "-preview" : ""}.mp4`,
     );
-    await renderMedia({
-      serveUrl,
-      composition,
-      inputProps,
-      codec: "h264",
-      crf: 18,
-      pixelFormat: "yuv420p",
-      audioCodec: "aac",
-      audioBitrate: "320k",
-      concurrency: 4,
-      scale: mode === "preview" ? 2 / 3 : 1,
-      outputLocation,
-      onProgress: ({ progress }) => {
-        const bucket = Math.floor(progress * 10);
-        if (bucket > last) {
-          last = bucket;
-          process.stdout.write(`Render ${bucket * 10}%\n`);
-        }
-      },
-    });
-    await masterAudio(outputLocation);
-    await exportCaptionsAndMetadata(production, edition);
-    if (mode === "render") await thumbnail(production, edition, serveUrl);
+    yield* io("Render the video", () =>
+      renderMedia({
+        serveUrl,
+        composition,
+        inputProps,
+        codec: "h264",
+        crf: 18,
+        pixelFormat: "yuv420p",
+        audioCodec: "aac",
+        audioBitrate: "320k",
+        concurrency: 4,
+        scale: mode === "preview" ? 2 / 3 : 1,
+        outputLocation,
+        onProgress: ({ progress }) => {
+          const bucket = Math.floor(progress * 10);
+          if (bucket > last) {
+            last = bucket;
+            process.stdout.write(`Render ${bucket * 10}%\n`);
+          }
+        },
+      }),
+    );
+    yield* masterAudio(outputLocation);
+    yield* exportCaptionsAndMetadata(production, edition);
+    if (mode === "render") yield* thumbnail(production, edition, serveUrl);
   }
-}
+});
 
-async function main() {
+const program = Effect.gen(function* () {
   const [command, ...args] = Bun.argv.slice(2);
   const edition: Edition = args[0] === "vertical" ? "vertical" : "landscape";
-  if (command === "music") return music(args[0]);
-  if (command === "voiceover") return voiceover(args[0], args[1]);
-  if (command === "footage") return footage(args);
-  if (command === "verify") return verify(edition);
+  if (command === "music") return yield* music(args[0]);
+  if (command === "voiceover") return yield* voiceover(args[0], args[1]);
+  if (command === "footage") return yield* footage(args);
+  if (command === "verify") return yield* verify(edition);
   if (command === "posting") {
-    await verify(edition);
-    const production = await load();
-    await exportCaptionsAndMetadata(production, edition);
-    await thumbnail(production, edition);
+    yield* verify(edition);
+    const production = yield* load();
+    yield* exportCaptionsAndMetadata(production, edition);
+    yield* thumbnail(production, edition);
     process.stdout.write(
       "Upload package: designed thumbnail, metadata, and subtitles in out/\n",
     );
-    return;
+    return undefined;
   }
   if (command === "review") {
-    const production = await load();
+    const production = yield* load();
     const clip = production.clips[args[0]];
-    if (!clip) throw new Error("Unknown clip");
-    if ((await hash(resolve(root, "public", clip.file))) !== clip.sha256)
-      throw new Error("Footage changed since import");
+    if (!clip) return yield* fail("Unknown clip");
+    if ((yield* hash(resolve(root, "public", clip.file))) !== clip.sha256)
+      return yield* fail("Footage changed since import");
     clip.reviewed = true;
-    await save(production);
+    yield* save(production);
     process.stdout.write(`Marked ${args[0]} as reviewed\n`);
-    return;
+    return undefined;
   }
   if (command === "preview" || command === "render" || command === "inspect")
-    return render(command, edition);
+    return yield* render(command, edition);
   if (command === "studio") {
-    await directory(".cache");
+    yield* directory(".cache");
     const path = resolve(root, ".cache/studio-props.json");
-    await Bun.write(
+    yield* write(
       path,
       JSON.stringify({
-        production: await load(),
+        production: yield* load(),
         captions: true,
         draft: true,
         edition,
       }),
     );
-    const child = Bun.spawn(
+    const child = yield* spawn(
       [
         "bunx",
         "remotion",
@@ -331,18 +354,14 @@ async function main() {
         "--no-open",
         `--props=${path}`,
       ],
-      { cwd: root, stdout: "inherit", stderr: "inherit" },
+      { stdout: "inherit", stderr: "inherit" },
     );
-    process.exitCode = await child.exited;
-    return;
+    process.exitCode = yield* io("Remotion Studio", () => child.exited);
+    return undefined;
   }
-  throw new Error(
+  return yield* fail(
     "Commands: studio, footage, review, voiceover, music, verify, posting, inspect, preview, render",
   );
-}
-await main().catch((error: unknown) => {
-  process.stderr.write(
-    `${error instanceof Error ? error.message : "Production failed"}\n`,
-  );
-  process.exitCode = 1;
-});
+}).pipe(Effect.scoped);
+
+await main(program);

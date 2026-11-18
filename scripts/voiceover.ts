@@ -1,27 +1,72 @@
 import { resolve } from "node:path";
 
-import { scenes, shortScenes } from "../src/config";
-import { alignedCaptions, type Alignment } from "./caption-timing";
-import { directory, hash, load, mediaDuration, root, run, save } from "./io";
+import { Effect, Option, Schema } from "effect";
 
-export async function voiceover(
-  style = process.env.STACKANVIL_NARRATION ?? "calm",
+import { scenes, shortScenes } from "../src/config";
+import { alignedCaptions } from "./caption-timing";
+import { elevenLabs, setting } from "./elevenlabs";
+import {
+  decode,
+  directory,
+  exists,
+  fail,
+  hash,
+  load,
+  mediaDuration,
+  readJson,
+  reason,
+  root,
+  run,
+  save,
+  ToolError,
+  write,
+} from "./io";
+
+const Alignment = Schema.Struct({
+  characters: Schema.mutable(Schema.Array(Schema.String)),
+  character_start_times_seconds: Schema.mutable(Schema.Array(Schema.Finite)),
+  character_end_times_seconds: Schema.mutable(Schema.Array(Schema.Finite)),
+});
+/** The parts of the text-to-dialogue response that the production uses. */
+export const Dialogue = Schema.Struct({
+  audio_base64: Schema.String,
+  normalized_alignment: Schema.optional(Schema.NullOr(Alignment)),
+  alignment: Schema.optional(Schema.NullOr(Alignment)),
+});
+const CachedDialogue = Schema.Struct({
+  signature: Schema.String,
+  result: Schema.Unknown,
+});
+
+const cachedDialogue = (path: string, signature: string) =>
+  Effect.gen(function* () {
+    if (!(yield* exists(path))) return Option.none<unknown>();
+    const cache = yield* readJson(path).pipe(
+      Effect.flatMap(decode(CachedDialogue, "Narration cache")),
+      Effect.option,
+    );
+    return Option.isSome(cache) && cache.value.signature === signature
+      ? Option.some(cache.value.result)
+      : Option.none<unknown>();
+  });
+
+export const voiceover = Effect.fnUntraced(function* (
+  requestedStyle?: string,
   onlyScene?: string,
 ) {
+  const style =
+    requestedStyle ?? (yield* setting("STACKANVIL_NARRATION", "calm"));
   if (style !== "calm" && style !== "energetic")
-    throw new Error("Choose calm or energetic");
-  const key = process.env.ELEVENLABS_API_KEY;
-  const narratorVoice =
-    process.env.ELEVENLABS_VOICE_ID ?? "TX3LPaxmHKxFdv7VOQHJ";
-  const production = await load();
-  await directory("public/media/voiceover");
-  await directory(".cache/voiceover");
+    return yield* fail("Choose calm or energetic");
+  const voiceId = yield* setting("ELEVENLABS_VOICE_ID", "TX3LPaxmHKxFdv7VOQHJ");
+  const production = yield* load();
+  yield* directory("public/media/voiceover");
+  yield* directory(".cache/voiceover");
   const selected = [...scenes, ...shortScenes].filter(
     (scene) => !onlyScene || scene.id === onlyScene,
   );
-  if (!selected.length) throw new Error("Unknown narration scene");
+  if (!selected.length) return yield* fail("Unknown narration scene");
   for (const scene of selected) {
-    const voiceId = narratorVoice;
     const signature = JSON.stringify({
       text: scene.narration,
       style,
@@ -30,21 +75,12 @@ export async function voiceover(
       ending: "long-pause-with-decoded-tail",
       format: "mp3_44100_128",
     });
-    const cache = Bun.file(resolve(root, `.cache/voiceover/${scene.id}.json`));
-    let result: {
-      audio_base64: string;
-      normalized_alignment?: Alignment;
-      alignment?: Alignment;
-    };
-    if ((await cache.exists()) && (await cache.json()).signature === signature)
-      result = (await cache.json()).result;
-    else {
-      if (!key) throw new Error("Set ELEVENLABS_API_KEY to generate narration");
-      const response = await fetch(
-        "https://api.elevenlabs.io/v1/text-to-dialogue/with-timestamps?output_format=mp3_44100_128",
-        {
-          method: "POST",
-          headers: { "xi-api-key": key, "Content-Type": "application/json" },
+    const cache = resolve(root, `.cache/voiceover/${scene.id}.json`);
+    const cached = yield* cachedDialogue(cache, signature);
+    const result = Option.isSome(cached)
+      ? yield* decode(Dialogue, `Narration cache for ${scene.id}`)(cached.value)
+      : yield* elevenLabs({
+          path: "text-to-dialogue/with-timestamps?output_format=mp3_44100_128",
           body: JSON.stringify({
             inputs: [
               {
@@ -55,31 +91,43 @@ export async function voiceover(
             model_id: "eleven_v4",
             language_code: "en",
           }),
-          signal: AbortSignal.timeout(120000),
-        },
-      );
-      if (!response.ok)
-        throw new Error(
-          `ElevenLabs returned ${response.status} for ${scene.id}`,
+          purpose: "narration",
+          timeoutSeconds: 120,
+          rejected: (status) => `ElevenLabs returned ${status} for ${scene.id}`,
+        }).pipe(
+          Effect.map(({ bytes }) => new TextDecoder().decode(bytes)),
+          Effect.flatMap(
+            decode(
+              Schema.fromJsonString(Dialogue),
+              `ElevenLabs returned malformed narration for ${scene.id}`,
+            ),
+          ),
+          Effect.tap((fresh) =>
+            write(cache, JSON.stringify({ signature, result: fresh })),
+          ),
         );
-      result = await response.json();
-      await Bun.write(cache, JSON.stringify({ signature, result }));
-    }
     const alignment = result.normalized_alignment ?? result.alignment;
-    if (!alignment) throw new Error(`Missing alignment for ${scene.id}`);
+    if (!alignment) return yield* fail(`Missing alignment for ${scene.id}`);
     const spoken = alignment.characters.join("");
     const characters = [...alignment.characters];
     for (const tag of spoken.matchAll(/\[[^\]]+\]/g))
       for (let i = tag.index; i < tag.index + tag[0].length; i++)
         characters[i] = " ";
-    const captions = alignedCaptions({ ...alignment, characters });
+    const captions = yield* Effect.try({
+      try: () => alignedCaptions({ ...alignment, characters }),
+      catch: (cause) =>
+        new ToolError({
+          message: `Invalid alignment for ${scene.id}: ${reason(cause)}`,
+          cause,
+        }),
+    });
     for (const caption of captions)
       caption.text = caption.text.replaceAll("Stack Anvil", "StackAnvil");
     const file = `media/voiceover/${scene.id}.wav`;
     const path = resolve(root, "public", file);
     const source = resolve(root, `.cache/voiceover/${scene.id}.mp3`);
-    await Bun.write(source, Buffer.from(result.audio_base64, "base64"));
-    await run([
+    yield* write(source, Buffer.from(result.audio_base64, "base64"));
+    yield* run([
       "ffmpeg",
       "-nostdin",
       "-y",
@@ -97,12 +145,13 @@ export async function voiceover(
     ]);
     production.voices[scene.id] = {
       file,
-      sha256: await hash(path),
+      sha256: yield* hash(path),
       text: scene.narration,
-      duration: await mediaDuration(path),
+      duration: yield* mediaDuration(path),
       captions,
     };
-    await save(production);
+    yield* save(production);
     process.stdout.write(`Narration and aligned captions: ${scene.id}\n`);
   }
-}
+  return undefined;
+});

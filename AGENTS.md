@@ -46,6 +46,17 @@ Treat the upload package as part of every finished video. An MP4 alone is not a 
 
 Write Conventional Commit messages. Add a body for non-trivial changes. Never bypass hooks. Never create a new branch without the user's instruction.
 
+## Effect
+
+The production scripts in `scripts/` use Effect v4.
+
+- Write side effects as Effect programs. Wrap promise APIs with `io` from `scripts/io.ts`. Start processes with `run` or `spawn`, so they stop when the program is interrupted.
+- Report expected failures as `ToolError` with `fail(message)`. The message is what the user sees.
+- Validate the manifest, API responses, and caches with `Schema` through `decode`.
+- Read environment variables through Effect `Config`. `scripts/elevenlabs.ts` owns the API key, request timeouts, and status errors.
+- Run each script once at its entry point with `main(program)`. Keep React components and `src/` free of Effect.
+- `bun install` runs `effect-tsgo patch`, which enables the `effecttsgo` Oxlint rules.
+
 ## Shotcraft
 
 Read `docs/shotcraft.md` before using Video Shotcraft recipes. Use the local Shotcraft components before adapting another demo. Preserve the existing production and evidence checks. The Shotcraft samplers are motion studies, not final delivery compositions.

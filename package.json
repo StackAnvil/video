@@ -14,11 +14,13 @@
     "@remotion/media": "4.0.534",
     "@remotion/renderer": "4.0.534",
     "@remotion/transitions": "4.0.534",
+    "effect": "4.1.4",
     "react": "19.2.3",
     "react-dom": "19.2.3",
     "remotion": "4.0.534"
   },
   "devDependencies": {
+    "@effect/tsgo": "0.70.0",
     "@types/bun": "^1.4.2",
     "@types/react": "19.2.7",
     "@types/web": "0.0.166",
@@ -31,7 +33,7 @@
   "scripts": {
     "shotcraft:inspect": "bun scripts/shotcraft.ts inspect",
     "shotcraft:render": "bun scripts/shotcraft.ts render",
-    "prepare": "lefthook install",
+    "prepare": "lefthook install && effect-tsgo patch --no-typescript --oxlint",
     "dev": "bun scripts/produce.ts studio",
     "build": "remotion bundle src/index.ts",
     "compositions": "remotion compositions src/index.ts",
