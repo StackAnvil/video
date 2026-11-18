@@ -49,7 +49,9 @@ async function verify(edition: Edition = "landscape") {
       failures.push(`Media changed after review: ${asset.file}`);
   }
   if (failures.length) throw new Error(failures.join("\n"));
-  console.log("All required footage, narration, captions, and music are ready");
+  process.stdout.write(
+    "All required footage, narration, captions, and music are ready\n",
+  );
 }
 
 async function footage(args: string[]) {
@@ -117,8 +119,8 @@ async function footage(args: string[]) {
     recordedAt: new Date().toISOString(),
   };
   await save(production);
-  console.log(
-    `Imported ${id}. Review the entire trimmed clip, then run bun run review ${id}.`,
+  process.stdout.write(
+    `Imported ${id}. Review the entire trimmed clip, then run bun run review ${id}.\n`,
   );
 }
 
@@ -245,7 +247,7 @@ async function render(
     }
     if (production.clips["galaxite-actors"]?.reviewed)
       await thumbnail(production, edition, serveUrl);
-    console.log("Scene and transition frames: out/review");
+    process.stdout.write("Scene and transition frames: out/review\n");
   } else {
     let last = -1;
     const outputLocation = resolve(
@@ -268,7 +270,7 @@ async function render(
         const bucket = Math.floor(progress * 10);
         if (bucket > last) {
           last = bucket;
-          console.log(`Render ${bucket * 10}%`);
+          process.stdout.write(`Render ${bucket * 10}%\n`);
         }
       },
     });
@@ -290,8 +292,8 @@ async function main() {
     const production = await load();
     await exportCaptionsAndMetadata(production, edition);
     await thumbnail(production, edition);
-    console.log(
-      "Upload package: designed thumbnail, metadata, and subtitles in out/",
+    process.stdout.write(
+      "Upload package: designed thumbnail, metadata, and subtitles in out/\n",
     );
     return;
   }
@@ -303,7 +305,7 @@ async function main() {
       throw new Error("Footage changed since import");
     clip.reviewed = true;
     await save(production);
-    console.log(`Marked ${args[0]} as reviewed`);
+    process.stdout.write(`Marked ${args[0]} as reviewed\n`);
     return;
   }
   if (command === "preview" || command === "render" || command === "inspect")
@@ -339,6 +341,8 @@ async function main() {
   );
 }
 await main().catch((error: unknown) => {
-  console.error(error instanceof Error ? error.message : "Production failed");
+  process.stderr.write(
+    `${error instanceof Error ? error.message : "Production failed"}\n`,
+  );
   process.exitCode = 1;
 });

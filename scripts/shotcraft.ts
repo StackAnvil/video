@@ -51,7 +51,7 @@ const frames = [
     SAMPLER_FRAMES - 31,
     SAMPLER_FRAMES - 1,
   ]),
-].sort((a, b) => a - b);
+].toSorted((a, b) => a - b);
 const browser = await openBrowser("chrome");
 try {
   const compositions = await getCompositions(bundle, {
@@ -76,7 +76,7 @@ try {
           imageFormat: "png",
           scale: 0.5,
         });
-        console.log(`${id}: frame ${frame}`);
+        process.stdout.write(`${id}: frame ${frame}\n`);
       }
     } else {
       const file = resolve(output, `${id}.mp4`);
@@ -91,7 +91,7 @@ try {
         pixelFormat: "yuv420p",
         concurrency: 2,
       });
-      console.log(`Rendered ${file}`);
+      process.stdout.write(`Rendered ${file}\n`);
     }
   }
 } finally {

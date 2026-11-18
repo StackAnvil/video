@@ -103,6 +103,6 @@ export async function voiceover(
       captions,
     };
     await save(production);
-    console.log(`Narration and aligned captions: ${scene.id}`);
+    process.stdout.write(`Narration and aligned captions: ${scene.id}\n`);
   }
 }

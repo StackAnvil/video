@@ -71,5 +71,5 @@ export async function masterAudio(path: string) {
     temporary,
   ]);
   await rename(temporary, path);
-  console.log("Audio mastered: -16 LUFS target, AAC peak headroom");
+  process.stdout.write("Audio mastered: -16 LUFS target, AAC peak headroom\n");
 }
