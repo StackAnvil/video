@@ -2,6 +2,7 @@ import { afterEach, describe, expect, spyOn, test } from "bun:test";
 
 import { ConfigProvider, Effect } from "effect";
 
+import { required } from "../src/required";
 import { elevenLabs, setting, type ElevenLabsRequest } from "./elevenlabs";
 
 const withEnv =
@@ -64,7 +65,7 @@ describe("ElevenLabs requests", () => {
     );
     expect(new TextDecoder().decode(response.bytes)).toBe("audio");
     expect(response.headers.get("song-id")).toBe("song-1");
-    const [url, init] = fetch.mock.calls[0];
+    const [url, init] = required(fetch.mock.calls[0], "fetch call");
     expect(url).toBe("https://api.elevenlabs.io/v1/music?output_format=auto");
     expect(new Headers(init?.headers).get("xi-api-key")).toBe("secret");
   });

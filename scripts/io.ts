@@ -65,7 +65,7 @@ const Caption = Schema.Struct({
   endMs: Finite,
   timestampMs: Schema.NullOr(Finite),
   confidence: Schema.NullOr(Finite),
-  pageBreakAfter: Schema.optional(Schema.Boolean),
+  pageBreakAfter: Schema.optionalKey(Schema.Boolean),
 });
 const Asset = {
   file: Schema.String,
@@ -80,8 +80,8 @@ export const ProductionManifest = Schema.Struct({
       reviewed: Schema.Boolean,
       provenance: Schema.String,
       recordedAt: Schema.String,
-      focus: Schema.optional(Focus),
-      portraitMenus: Schema.optional(
+      focus: Schema.optionalKey(Focus),
+      portraitMenus: Schema.optionalKey(
         Schema.mutable(
           Schema.Array(
             Schema.Struct({ from: Finite, to: Finite, focus: Focus }),
@@ -98,7 +98,9 @@ export const ProductionManifest = Schema.Struct({
       captions: Schema.mutable(Schema.Array(Caption)),
     }),
   ),
-  music: Schema.optional(Schema.Struct({ ...Asset, license: Schema.String })),
+  music: Schema.optionalKey(
+    Schema.Struct({ ...Asset, license: Schema.String }),
+  ),
 });
 export const decodeProduction = (
   input: unknown,
@@ -140,7 +142,7 @@ export const spawn = <
   const Out extends Bun.Spawn.Readable = "pipe",
   const Err extends Bun.Spawn.Readable = "inherit",
 >(
-  command: string[],
+  command: [string, ...string[]],
   options: Bun.Spawn.SpawnOptions<"ignore", Out, Err> = {},
 ) =>
   Effect.acquireRelease(
@@ -159,7 +161,9 @@ export const spawn = <
   );
 
 /** Runs a command and returns its trimmed stdout. */
-export const run = Effect.fnUntraced(function* (command: string[]) {
+export const run = Effect.fnUntraced(function* (
+  command: [string, ...string[]],
+) {
   const child = yield* spawn(command, { stdout: "pipe", stderr: "pipe" });
   const [stdout, stderr, code] = yield* io(command[0], () =>
     Promise.all([

@@ -4,6 +4,7 @@ import { Effect, Option, Schema } from "effect";
 
 import { FPS } from "../src/config";
 import { duration } from "../src/production";
+import { required } from "../src/required";
 import { elevenLabs, setting } from "./elevenlabs";
 import {
   decode,
@@ -45,7 +46,7 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
   buffer.writeUInt16LE(16, 34);
   buffer.write("data", 36);
   buffer.writeUInt32LE(count * 2, 40);
-  const chords = [
+  const chords: [number, number, number][] = [
     [146.83, 174.61, 220],
     [130.81, 164.81, 196],
     [116.54, 146.83, 174.61],
@@ -54,7 +55,10 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
   for (let index = 0; index < count; index++) {
     const t = index / rate;
     const beat = (t * 96) / 60;
-    const chord = chords[Math.floor(beat / 8) % chords.length];
+    const chord = required(
+      chords[Math.floor(beat / 8) % chords.length],
+      "chord",
+    );
     const p = beat % 1;
     const chordEnvelope = Math.min(1, (beat % 8) * 2, (8 - (beat % 8)) * 2);
     const pad =
@@ -64,7 +68,9 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
     const bass =
       Math.sin(((2 * Math.PI * chord[0]) / 2) * t) * Math.exp(-p * 7) * 0.11;
     const melody =
-      Math.sin(2 * Math.PI * chord[Math.floor(beat * 2) % 3] * 2 * t) *
+      Math.sin(
+        2 * Math.PI * required(chord[Math.floor(beat * 2) % 3], "note") * 2 * t,
+      ) *
       Math.exp(-((beat * 2) % 1) * 10) *
       0.06;
     const tick =

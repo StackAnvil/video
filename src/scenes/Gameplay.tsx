@@ -13,7 +13,7 @@ export function Gameplay({
   clip,
   scene,
 }: {
-  clip?: Clip;
+  clip?: Clip | undefined;
   scene: Extract<Scene, { kind: "footage" }>;
 }) {
   const frame = useCurrentFrame();

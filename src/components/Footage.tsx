@@ -10,10 +10,10 @@ export function Footage({
   framing = "world",
   focus: focusOverride,
 }: {
-  clip?: Clip;
+  clip?: Clip | undefined;
   name: string;
   framing?: "world" | "menu" | "web";
-  focus?: Focus;
+  focus?: Focus | undefined;
 }) {
   const { width, height } = useVideoConfig();
   const vertical = height > width;

@@ -8,29 +8,31 @@ import {
   readiness,
   timeline,
 } from "../src/production";
+import { required } from "../src/required";
 import { alignedCaptions, subtitles } from "./caption-timing";
 
 describe("production timing", () => {
   test("adjacent scenes overlap only by the transition duration", () => {
     const entries = timeline(emptyProduction);
-    for (let i = 1; i < entries.length; i++)
-      expect(entries[i].start).toBe(
-        entries[i - 1].start + entries[i - 1].frames - TRANSITION,
-      );
-    expect(duration(emptyProduction)).toBe(
-      entries.at(-1)!.start + entries.at(-1)!.frames,
-    );
+    for (let i = 1; i < entries.length; i++) {
+      const previous = required(entries[i - 1], "previous entry");
+      const entry = required(entries[i], "entry");
+      expect(entry.start).toBe(previous.start + previous.frames - TRANSITION);
+    }
+    const last = required(entries.at(-1), "last entry");
+    expect(duration(emptyProduction)).toBe(last.start + last.frames);
   });
   test("long narration extends a scene and shifts later scenes", () => {
     const production = structuredClone(emptyProduction);
-    production.voices[timeline(production)[0].scene.id] = {
+    const [first] = timeline(production);
+    production.voices[required(first, "first entry").scene.id] = {
       file: "voice.wav",
       sha256: "",
       text: "",
       duration: 20,
       captions: [],
     };
-    expect(timeline(production)[0].frames).toBe(
+    expect(required(timeline(production)[0], "first entry").frames).toBe(
       20 * FPS + VOICE_DELAY + VOICE_TAIL + TRANSITION,
     );
     expect(duration(production)).toBeGreaterThan(duration(emptyProduction));
@@ -50,7 +52,9 @@ describe("production timing", () => {
       const voiceEnd =
         entry.start +
         VOICE_DELAY +
-        Math.ceil(production.voices[entry.scene.id].duration * FPS) +
+        Math.ceil(
+          required(production.voices[entry.scene.id], "voice").duration * FPS,
+        ) +
         VOICE_TAIL;
       expect(entry.start + entry.frames - TRANSITION).toBeGreaterThanOrEqual(
         voiceEnd,
@@ -61,7 +65,9 @@ describe("production timing", () => {
     const production = structuredClone(emptyProduction);
     const landscapeBefore = duration(production);
     const shortBefore = duration(production, "vertical");
-    production.voices[timeline(production, "vertical")[0].scene.id] = {
+    production.voices[
+      required(timeline(production, "vertical")[0], "first entry").scene.id
+    ] = {
       file: "",
       sha256: "",
       text: "",
@@ -72,9 +78,9 @@ describe("production timing", () => {
     expect(duration(production, "vertical")).toBeGreaterThan(shortBefore);
     const selected = timeline(production, "vertical");
     for (let i = 1; i < selected.length; i++) {
-      expect(selected[i].start).toBe(
-        selected[i - 1].start + selected[i - 1].frames - TRANSITION,
-      );
+      const previous = required(selected[i - 1], "previous entry");
+      const entry = required(selected[i], "entry");
+      expect(entry.start).toBe(previous.start + previous.frames - TRANSITION);
     }
   });
   test("incomplete production cannot pass publication checks", () => {
@@ -83,20 +89,25 @@ describe("production timing", () => {
   test("rounded chapter timestamps leave at least ten seconds per chapter", () => {
     const entries = chapters(emptyProduction);
     expect(entries.length).toBeGreaterThanOrEqual(3);
-    expect(entries[0].seconds).toBe(0);
+    expect(required(entries[0], "first chapter").seconds).toBe(0);
     for (const entry of entries) {
-      const start = timeline(emptyProduction).find(
-        ({ scene }) => scene.id === entry.scene.id,
-      )!.start;
+      const { start } = required(
+        timeline(emptyProduction).find(
+          ({ scene }) => scene.id === entry.scene.id,
+        ),
+        "timeline entry",
+      );
       expect(entry.seconds * FPS).toBeGreaterThanOrEqual(start);
       expect(entry.seconds * FPS).toBeLessThan(start + FPS);
     }
-    for (let i = 1; i < entries.length; i++)
-      expect(
-        entries[i].seconds - entries[i - 1].seconds,
-      ).toBeGreaterThanOrEqual(10);
+    for (let i = 1; i < entries.length; i++) {
+      const previous = required(entries[i - 1], "previous chapter");
+      const entry = required(entries[i], "chapter");
+      expect(entry.seconds - previous.seconds).toBeGreaterThanOrEqual(10);
+    }
     expect(
-      Math.floor(duration(emptyProduction) / FPS) - entries.at(-1)!.seconds,
+      Math.floor(duration(emptyProduction) / FPS) -
+        required(entries.at(-1), "last chapter").seconds,
     ).toBeGreaterThanOrEqual(10);
   });
 });
@@ -112,10 +123,11 @@ describe("speech alignment", () => {
       character_end_times_seconds: characters.map((_, i) => (i + 1) * 0.1),
     });
     expect(captions).toHaveLength(2);
-    expect(captions[0].startMs).toBe(0);
-    expect(captions[0].endMs).toBe(4400);
-    expect(captions[1].startMs).toBe(4500);
-    expect(captions[1].endMs).toBeCloseTo(4800);
+    const [first, second] = captions;
+    expect(first?.startMs).toBe(0);
+    expect(first?.endMs).toBe(4400);
+    expect(second?.startMs).toBe(4500);
+    expect(second?.endMs).toBeCloseTo(4800);
   });
   test("invalid alignment cannot create subtitles", () => {
     expect(() =>
@@ -136,7 +148,7 @@ describe("speech alignment", () => {
         confidence: null,
       },
     ]);
-    const times = result.split("\n")[1].split(" --> ");
+    const times = required(result.split("\n")[1], "timing line").split(" --> ");
     expect(times).toEqual(["00:01:00,000", "00:01:01,000"]);
   });
 });

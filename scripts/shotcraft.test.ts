@@ -8,16 +8,16 @@ import {
   SAMPLER_FRAMES,
   PUSH_FRAMES,
 } from "../src/components/shotcraft/timing";
+import { required } from "../src/required";
 
 describe("Shotcraft timeline", () => {
   test("adjacent scenes overlap by the transition budget", () => {
     for (let position = 1; position < samplerShots.length; position++) {
-      const previous = samplerShots[position - 1];
-      expect(
-        previous.from + previous.duration - samplerShots[position].from,
-      ).toBe(PUSH_FRAMES);
+      const previous = required(samplerShots[position - 1], "previous shot");
+      const shot = required(samplerShots[position], "shot");
+      expect(previous.from + previous.duration - shot.from).toBe(PUSH_FRAMES);
     }
-    const last = samplerShots.at(-1)!;
+    const last = required(samplerShots.at(-1), "last shot");
     expect(last.from + last.duration).toBe(SAMPLER_FRAMES);
   });
   test("incoming and outgoing panels remain in rigid contact", () => {

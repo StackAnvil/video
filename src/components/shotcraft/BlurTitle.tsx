@@ -13,7 +13,7 @@ function Words({
   text: string;
   start: number;
   subtitle?: boolean;
-  style?: CSSProperties;
+  style?: CSSProperties | undefined;
 }) {
   const frame = useCurrentFrame();
   const { fps } = useVideoConfig();

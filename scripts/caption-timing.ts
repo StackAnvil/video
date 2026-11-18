@@ -1,5 +1,7 @@
 import type { Caption } from "@remotion/captions";
 
+import { required } from "../src/required";
+
 export interface Alignment {
   characters: string[];
   character_start_times_seconds: number[];
@@ -17,12 +19,18 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
   const captions: Caption[] = [];
   let line: RegExpMatchArray[] = [];
   const flush = () => {
-    if (!line.length) return;
-    const start = line[0].index!;
-    const last = line.at(-1)!;
-    const end = last.index! + last[0].length - 1;
-    const startMs = alignment.character_start_times_seconds[start] * 1000;
-    const endMs = alignment.character_end_times_seconds[end] * 1000;
+    const first = line[0];
+    const last = line.at(-1);
+    if (!first || !last) return;
+    const start = required(first.index, "caption word position");
+    const end =
+      required(last.index, "caption word position") + last[0].length - 1;
+    const startSeconds = alignment.character_start_times_seconds[start];
+    const endSeconds = alignment.character_end_times_seconds[end];
+    if (startSeconds === undefined || endSeconds === undefined)
+      throw new Error("Invalid caption timing");
+    const startMs = startSeconds * 1000;
+    const endMs = endSeconds * 1000;
     if (
       !Number.isFinite(startMs) ||
       !Number.isFinite(endMs) ||

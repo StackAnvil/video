@@ -35,11 +35,11 @@ export const masterAudio = Effect.fnUntraced(function* (path: string) {
     "Audio loudness analysis is malformed",
   )(report);
   const parameters = {
-    measured_I: measured.input_i,
-    measured_TP: measured.input_tp,
-    measured_LRA: measured.input_lra,
-    measured_thresh: measured.input_thresh,
-    offset: measured.target_offset,
+    measured_I: measured["input_i"],
+    measured_TP: measured["input_tp"],
+    measured_LRA: measured["input_lra"],
+    measured_thresh: measured["input_thresh"],
+    offset: measured["target_offset"],
   };
   if (
     Object.values(parameters).some((value) => !Number.isFinite(Number(value)))

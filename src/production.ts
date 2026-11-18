@@ -9,6 +9,7 @@ import {
   type Edition,
 } from "./config";
 import { publishing } from "./publishing";
+import { required } from "./required";
 
 export interface Focus {
   x: number;
@@ -69,7 +70,10 @@ export function duration(
   production: Production,
   edition: Edition = "landscape",
 ) {
-  const last = timeline(production, edition).at(-1)!;
+  const last = required(
+    timeline(production, edition).at(-1),
+    `${edition} scene`,
+  );
   return last.start + last.frames;
 }
 export function chapters(
@@ -93,6 +97,7 @@ export function readiness(
   edition: Edition = "landscape",
 ) {
   const failures: string[] = [];
+  const entries = timeline(production, edition);
   for (const scene of scenesFor(edition)) {
     if ("clip" in scene) {
       const clip = production.clips[scene.clip];
@@ -101,9 +106,10 @@ export function readiness(
         failures.push(`Unreviewed footage: ${scene.clip}`);
       else if (
         clip.duration <
-        timeline(production, edition).find(
-          (entry) => entry.scene.id === scene.id,
-        )!.frames /
+        required(
+          entries.find((entry) => entry.scene.id === scene.id),
+          `timeline entry for ${scene.id}`,
+        ).frames /
           FPS
       )
         failures.push(`Footage too short: ${scene.clip}`);

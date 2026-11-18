@@ -73,6 +73,7 @@ const verify = Effect.fnUntraced(function* (edition: Edition = "landscape") {
 const footage = Effect.fnUntraced(function* (args: string[]) {
   const [id, source, startText, secondsText, ...provenance] = args;
   if (
+    !id ||
     ![...scenes, ...shortScenes].some(
       (scene) => "clip" in scene && scene.clip === id,
     ) ||
@@ -321,14 +322,15 @@ const program = Effect.gen(function* () {
     return undefined;
   }
   if (command === "review") {
+    const [id] = args;
     const production = yield* load();
-    const clip = production.clips[args[0]];
+    const clip = id === undefined ? undefined : production.clips[id];
     if (!clip) return yield* fail("Unknown clip");
     if ((yield* hash(resolve(root, "public", clip.file))) !== clip.sha256)
       return yield* fail("Footage changed since import");
     clip.reviewed = true;
     yield* save(production);
-    process.stdout.write(`Marked ${args[0]} as reviewed\n`);
+    process.stdout.write(`Marked ${id} as reviewed\n`);
     return undefined;
   }
   if (command === "preview" || command === "render" || command === "inspect")
