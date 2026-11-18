@@ -1,7 +1,7 @@
 import { TransitionSeries, linearTiming } from "@remotion/transitions";
 import { Easing } from "remotion";
 
-import { bottomPush } from "../components/shotcraft/BottomPush";
+import { bottomPush } from "../components/shotcraft/bottom-push";
 import { BrandOutro } from "../components/shotcraft/BrandOutro";
 import { ChapterFocus } from "../components/shotcraft/ChapterFocus";
 import {

@@ -4,7 +4,7 @@ import { AbsoluteFill } from "remotion";
 import { pushOffset } from "./timing";
 
 // Adapted from bottom-push-stack-wipe. Both panels share one eased progress.
-function BottomPushLayer({
+export function BottomPushLayer({
   children,
   presentationDirection,
   presentationProgress,
@@ -44,5 +44,3 @@ function BottomPushLayer({
     </AbsoluteFill>
   );
 }
-
-export const bottomPush = { component: BottomPushLayer, props: {} };

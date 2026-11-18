@@ -72,12 +72,9 @@ export async function voiceover(
     for (const tag of spoken.matchAll(/\[[^\]]+\]/g))
       for (let i = tag.index; i < tag.index + tag[0].length; i++)
         characters[i] = " ";
-    const captions = alignedCaptions({ ...alignment, characters }).map(
-      (caption) => ({
-        ...caption,
-        text: caption.text.replace(/Stack Anvil/g, "StackAnvil"),
-      }),
-    );
+    const captions = alignedCaptions({ ...alignment, characters });
+    for (const caption of captions)
+      caption.text = caption.text.replaceAll("Stack Anvil", "StackAnvil");
     const file = `media/voiceover/${scene.id}.wav`;
     const path = resolve(root, "public", file);
     const source = resolve(root, `.cache/voiceover/${scene.id}.mp3`);

@@ -130,6 +130,7 @@ async function exportCaptionsAndMetadata(
   const prefix = edition === "vertical" ? "showcase-vertical" : "showcase";
   const captions: Caption[] = timeline(production, edition).flatMap(
     ({ scene, start }) =>
+      // oxlint-disable-next-line oxc/no-map-spread -- copy so the production data stays unchanged
       (production.voices[scene.id]?.captions ?? []).map((caption) => ({
         ...caption,
         startMs: caption.startMs + ((start + VOICE_DELAY) / FPS) * 1000,
