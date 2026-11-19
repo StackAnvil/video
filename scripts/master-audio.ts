@@ -27,7 +27,7 @@ export const masterAudio = Effect.fnUntraced(function* (path: string) {
   const [stderr, code] = yield* io("Audio loudness analysis", () =>
     Promise.all([new Response(analysis.stderr).text(), analysis.exited]),
   );
-  const report = stderr.match(/\{[^{}]+\}/)?.[0];
+  const report = stderr.match(/\{[^{}]+\}/u)?.[0];
   if (code !== 0 || !report)
     return yield* fail("Audio loudness analysis failed");
   const measured = yield* decode(
@@ -50,7 +50,7 @@ export const masterAudio = Effect.fnUntraced(function* (path: string) {
     ...Object.entries(parameters).map(([key, value]) => `${key}=${value}`),
     "linear=true",
   ].join(":");
-  const temporary = path.replace(/\.mp4$/, ".master.tmp.mp4");
+  const temporary = path.replace(/\.mp4$/u, ".master.tmp.mp4");
   yield* run([
     "ffmpeg",
     "-nostdin",
@@ -79,5 +79,5 @@ export const masterAudio = Effect.fnUntraced(function* (path: string) {
   ]);
   yield* move(temporary, path);
   process.stdout.write("Audio mastered: -16 LUFS target, AAC peak headroom\n");
-  return undefined;
+  return yield* Effect.void;
 }, Effect.scoped);

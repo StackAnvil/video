@@ -63,11 +63,11 @@ const verify = Effect.fnUntraced(function* (edition: Edition = "landscape") {
     else if ((yield* hash(path)) !== asset.sha256)
       failures.push(`Media changed after review: ${asset.file}`);
   }
-  if (failures.length) return yield* fail(failures.join("\n"));
+  if (failures.length > 0) return yield* fail(failures.join("\n"));
   process.stdout.write(
     "All required footage, narration, captions, and music are ready\n",
   );
-  return undefined;
+  return yield* Effect.void;
 });
 
 const footage = Effect.fnUntraced(function* (args: string[]) {
@@ -78,7 +78,7 @@ const footage = Effect.fnUntraced(function* (args: string[]) {
       (scene) => "clip" in scene && scene.clip === id,
     ) ||
     !source ||
-    !provenance.length
+    provenance.length === 0
   )
     return yield* fail(
       'Usage: bun run footage <clip-id> <source.mp4> <start-seconds> <duration-seconds> "provenance"',
@@ -99,7 +99,7 @@ const footage = Effect.fnUntraced(function* (args: string[]) {
   yield* directory("public/media/footage");
   const file = `media/footage/${id}.mp4`;
   const output = resolve(root, "public", file);
-  const temporary = output.replace(/\.mp4$/, ".tmp.mp4");
+  const temporary = output.replace(/\.mp4$/u, ".tmp.mp4");
   yield* run([
     "ffmpeg",
     "-nostdin",
@@ -138,7 +138,7 @@ const footage = Effect.fnUntraced(function* (args: string[]) {
   process.stdout.write(
     `Imported ${id}. Review the entire trimmed clip, then run bun run review ${id}.\n`,
   );
-  return undefined;
+  return yield* Effect.void;
 });
 
 const exportCaptionsAndMetadata = Effect.fnUntraced(function* (
@@ -225,7 +225,7 @@ const thumbnail = Effect.fnUntraced(function* (
         output: resolve(root, output),
       }),
     );
-  return undefined;
+  return yield* Effect.void;
 });
 
 const render = Effect.fnUntraced(function* (
@@ -319,7 +319,7 @@ const program = Effect.gen(function* () {
     process.stdout.write(
       "Upload package: designed thumbnail, metadata, and subtitles in out/\n",
     );
-    return undefined;
+    return yield* Effect.void;
   }
   if (command === "review") {
     const [id] = args;
@@ -331,7 +331,7 @@ const program = Effect.gen(function* () {
     clip.reviewed = true;
     yield* save(production);
     process.stdout.write(`Marked ${id} as reviewed\n`);
-    return undefined;
+    return yield* Effect.void;
   }
   if (command === "preview" || command === "render" || command === "inspect")
     return yield* render(command, edition);
@@ -359,7 +359,7 @@ const program = Effect.gen(function* () {
       { stdout: "inherit", stderr: "inherit" },
     );
     process.exitCode = yield* io("Remotion Studio", () => child.exited);
-    return undefined;
+    return yield* Effect.void;
   }
   return yield* fail(
     "Commands: studio, footage, review, voiceover, music, verify, posting, inspect, preview, render",

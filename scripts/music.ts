@@ -95,7 +95,7 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
   };
   yield* save(production);
   process.stdout.write(`Original music: ${seconds}s\n`);
-  return undefined;
+  return yield* Effect.void;
 });
 
 const MusicCache = Schema.Struct({ signature: Schema.String });
@@ -197,5 +197,5 @@ const generatedMusic = Effect.fnUntraced(function* () {
   };
   yield* save(production);
   process.stdout.write(`Eleven Music v2.5: ${production.music.duration}s\n`);
-  return undefined;
+  return yield* Effect.void;
 });

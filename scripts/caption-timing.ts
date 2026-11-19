@@ -15,7 +15,7 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
     alignment.characters.length !== alignment.character_end_times_seconds.length
   )
     throw new Error("Alignment lengths differ");
-  const words = Array.from(source.matchAll(/\S+/g));
+  const words = Array.from(source.matchAll(/\S+/gu));
   const captions: Caption[] = [];
   let line: RegExpMatchArray[] = [];
   const flush = () => {
@@ -51,7 +51,7 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
     if ([...line.map((part) => part[0]), word[0]].join(" ").length > 58)
       flush();
     line.push(word);
-    if (/[.!?]$/.test(word[0]) || line.length >= 9) flush();
+    if (/[.!?]$/u.test(word[0]) || line.length >= 9) flush();
   }
   flush();
   return captions;

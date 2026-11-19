@@ -65,7 +65,7 @@ export const voiceover = Effect.fnUntraced(function* (
   const selected = [...scenes, ...shortScenes].filter(
     (scene) => !onlyScene || scene.id === onlyScene,
   );
-  if (!selected.length) return yield* fail("Unknown narration scene");
+  if (selected.length === 0) return yield* fail("Unknown narration scene");
   for (const scene of selected) {
     const signature = JSON.stringify({
       text: scene.narration,
@@ -110,7 +110,7 @@ export const voiceover = Effect.fnUntraced(function* (
     if (!alignment) return yield* fail(`Missing alignment for ${scene.id}`);
     const spoken = alignment.characters.join("");
     const characters = [...alignment.characters];
-    for (const tag of spoken.matchAll(/\[[^\]]+\]/g))
+    for (const tag of spoken.matchAll(/\[[^\]]+\]/gu))
       for (let i = tag.index; i < tag.index + tag[0].length; i++)
         characters[i] = " ";
     const captions = yield* Effect.try({
@@ -153,5 +153,5 @@ export const voiceover = Effect.fnUntraced(function* (
     yield* save(production);
     process.stdout.write(`Narration and aligned captions: ${scene.id}\n`);
   }
-  return undefined;
+  return yield* Effect.void;
 });

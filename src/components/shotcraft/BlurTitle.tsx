@@ -20,7 +20,7 @@ function Words({
   const occurrences = new Map<string, number>();
   const words = text
     .trim()
-    .split(/\s+/)
+    .split(/\s+/u)
     .filter(Boolean)
     .map((word) => {
       const occurrence = (occurrences.get(word) ?? 0) + 1;

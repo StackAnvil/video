@@ -105,7 +105,7 @@ const program = Effect.gen(function* () {
       process.stdout.write(`Rendered ${file}\n`);
     }
   }
-  return undefined;
+  return yield* Effect.void;
 }).pipe(Effect.scoped);
 
 await main(program);
