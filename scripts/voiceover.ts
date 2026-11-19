@@ -6,6 +6,7 @@ import { scenes, shortScenes } from "../src/config";
 import { alignedCaptions } from "./caption-timing";
 import { elevenLabs, setting } from "./elevenlabs";
 import {
+  encodeJson,
   decode,
   directory,
   exists,
@@ -67,7 +68,7 @@ export const voiceover = Effect.fnUntraced(function* (
   );
   if (selected.length === 0) return yield* fail("Unknown narration scene");
   for (const scene of selected) {
-    const signature = JSON.stringify({
+    const signature = encodeJson({
       text: scene.narration,
       style,
       voiceId,
@@ -81,7 +82,7 @@ export const voiceover = Effect.fnUntraced(function* (
       ? yield* decode(Dialogue, `Narration cache for ${scene.id}`)(cached.value)
       : yield* elevenLabs({
           path: "text-to-dialogue/with-timestamps?output_format=mp3_44100_128",
-          body: JSON.stringify({
+          body: encodeJson({
             inputs: [
               {
                 voice_id: voiceId,
@@ -103,7 +104,7 @@ export const voiceover = Effect.fnUntraced(function* (
             ),
           ),
           Effect.tap((fresh) =>
-            write(cache, JSON.stringify({ signature, result: fresh })),
+            write(cache, encodeJson({ signature, result: fresh })),
           ),
         );
     const alignment = result.normalized_alignment ?? result.alignment;

@@ -142,8 +142,8 @@ describe("speech alignment", () => {
     const result = subtitles([
       {
         text: "",
-        startMs: 59999.7,
-        endMs: 61000,
+        startMs: 59_999.7,
+        endMs: 61_000,
         timestampMs: null,
         confidence: null,
       },

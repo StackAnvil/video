@@ -7,7 +7,7 @@ import {
   renderStill,
   selectComposition,
 } from "@remotion/renderer";
-import { Effect } from "effect";
+import { DateTime, Effect } from "effect";
 
 import {
   FPS,
@@ -25,6 +25,8 @@ import {
 import { publishing } from "../src/publishing";
 import { subtitles } from "./caption-timing";
 import {
+  encodeJson,
+  encodeIndentedJson,
   directory,
   exists,
   fail,
@@ -126,13 +128,14 @@ const footage = Effect.fnUntraced(function* (args: string[]) {
     temporary,
   ]);
   yield* move(temporary, output);
+  const recordedAt = yield* DateTime.now;
   production.clips[id] = {
     file,
     sha256: yield* hash(output),
     duration: yield* mediaDuration(output),
     reviewed: false,
     provenance: provenance.join(" "),
-    recordedAt: new Date().toISOString(),
+    recordedAt: DateTime.formatIso(recordedAt),
   };
   yield* save(production);
   process.stdout.write(
@@ -160,7 +163,7 @@ const exportCaptionsAndMetadata = Effect.fnUntraced(function* (
   yield* write(resolve(root, `out/${prefix}.vtt`), subtitles(captions, true));
   yield* write(
     resolve(root, `out/${prefix}.captions.json`),
-    JSON.stringify(captions, null, 2),
+    encodeIndentedJson(captions),
   );
   const metadata = publishing[edition];
   const chapterText = chapters(production, edition)
@@ -340,7 +343,7 @@ const program = Effect.gen(function* () {
     const path = resolve(root, ".cache/studio-props.json");
     yield* write(
       path,
-      JSON.stringify({
+      encodeJson({
         production: yield* load(),
         captions: true,
         draft: true,

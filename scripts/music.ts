@@ -7,6 +7,7 @@ import { duration } from "../src/production";
 import { required } from "../src/required";
 import { elevenLabs, setting } from "./elevenlabs";
 import {
+  encodeJson,
   decode,
   directory,
   exists,
@@ -31,7 +32,7 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
   const seconds = Math.ceil(
     Math.max(duration(production), duration(production, "vertical")) / FPS + 3,
   );
-  const rate = 44100;
+  const rate = 44_100;
   const count = rate * seconds;
   const buffer = Buffer.alloc(44 + count * 2);
   buffer.write("RIFF", 0);
@@ -80,7 +81,7 @@ export const music = Effect.fnUntraced(function* (requestedMode?: string) {
       0.022;
     const fade = Math.min(1, t / 2, (seconds - t) / 3);
     buffer.writeInt16LE(
-      Math.round((pad + bass + melody + tick) * fade * 32767),
+      Math.round((pad + bass + melody + tick) * fade * 32_767),
       44 + index * 2,
     );
   }
@@ -117,7 +118,7 @@ const generatedMusic = Effect.fnUntraced(function* () {
   yield* directory("public/media/music");
   const metadata = resolve(root, ".cache/music/elevenlabs.json");
   const cache = resolve(root, ".cache/music/elevenlabs.mp3");
-  const signature = JSON.stringify(request);
+  const signature = encodeJson(request);
   const cached =
     (yield* exists(cache)) && (yield* exists(metadata))
       ? yield* readJson(metadata).pipe(
@@ -136,7 +137,7 @@ const generatedMusic = Effect.fnUntraced(function* () {
     yield* write(cache, response.bytes);
     yield* write(
       metadata,
-      JSON.stringify({ signature, songId: response.headers.get("song-id") }),
+      encodeJson({ signature, songId: response.headers.get("song-id") }),
     );
   }
   const file = "media/music/stackanvil-elevenlabs.wav";

@@ -58,7 +58,7 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
 }
 export function timestamp(ms: number, separator = ",") {
   const rounded = Math.round(ms);
-  return `${String(Math.floor(rounded / 3600000)).padStart(2, "0")}:${String(Math.floor(rounded / 60000) % 60).padStart(2, "0")}:${String(Math.floor(rounded / 1000) % 60).padStart(2, "0")}${separator}${String(rounded % 1000).padStart(3, "0")}`;
+  return `${String(Math.floor(rounded / 3_600_000)).padStart(2, "0")}:${String(Math.floor(rounded / 60_000) % 60).padStart(2, "0")}:${String(Math.floor(rounded / 1000) % 60).padStart(2, "0")}${separator}${String(rounded % 1000).padStart(3, "0")}`;
 }
 export function subtitles(captions: Caption[], vtt = false) {
   return `${vtt ? "WEBVTT\n\n" : ""}${captions.map((caption, index) => `${index + 1}\n${timestamp(caption.startMs, vtt ? "." : ",")} --> ${timestamp(caption.endMs, vtt ? "." : ",")}\n${caption.text.trim()}\n`).join("\n")}`;

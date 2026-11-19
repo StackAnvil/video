@@ -2,14 +2,25 @@ import { createHash } from "node:crypto";
 import { mkdir, rename } from "node:fs/promises";
 import { resolve } from "node:path";
 
-import { Data, Effect, Schema } from "effect";
+import { Effect, Schema } from "effect";
 
 import { emptyProduction, type Production } from "../src/production";
 
-export class ToolError extends Data.TaggedError("ToolError")<{
-  message: string;
-  cause?: unknown;
-}> {}
+// oxlint-disable-next-line unicorn/throw-new-error -- Schema.TaggedError is a class factory.
+export class ToolError extends Schema.TaggedError<
+  ToolError,
+  { readonly brand: unique symbol }
+>()("ToolError", {
+  message: Schema.String,
+  cause: Schema.optionalKey(Schema.Unknown),
+}) {}
+
+export const encodeJson = Schema.encodeSync(
+  Schema.fromJsonString(Schema.Unknown),
+);
+export const encodeIndentedJson = Schema.encodeSync(
+  Schema.fromJsonString(Schema.Unknown, { space: 2 }),
+);
 
 export const reason = (cause: unknown) =>
   cause instanceof Error ? cause.message : String(cause);
@@ -123,11 +134,12 @@ export const move = (from: string, to: string) =>
 
 export const load = Effect.fnUntraced(function* () {
   if (!(yield* exists(manifest))) return structuredClone(emptyProduction);
-  return yield* decodeProduction(yield* readJson(manifest));
+  const input = yield* readJson(manifest);
+  return yield* decodeProduction(input);
 });
 export const save = Effect.fnUntraced(function* (production: Production) {
   const temporary = `${manifest}.tmp`;
-  yield* write(temporary, `${JSON.stringify(production, null, 2)}\n`);
+  yield* write(temporary, `${encodeIndentedJson(production)}\n`);
   yield* move(temporary, manifest);
 });
 export const hash = (path: string) =>
@@ -178,18 +190,17 @@ export const run = Effect.fnUntraced(function* (
 }, Effect.scoped);
 
 export const mediaDuration = Effect.fnUntraced(function* (path: string) {
-  const result = Number(
-    yield* run([
-      "ffprobe",
-      "-v",
-      "error",
-      "-show_entries",
-      "format=duration",
-      "-of",
-      "default=noprint_wrappers=1:nokey=1",
-      path,
-    ]),
-  );
+  const output = yield* run([
+    "ffprobe",
+    "-v",
+    "error",
+    "-show_entries",
+    "format=duration",
+    "-of",
+    "default=noprint_wrappers=1:nokey=1",
+    path,
+  ]);
+  const result = Number(output);
   if (!Number.isFinite(result) || result <= 0)
     return yield* fail("Invalid media duration");
   return result;
