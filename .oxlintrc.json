@@ -1,4 +1,8 @@
 {
+  "jsPlugins": [
+    { "name": "react-hooks-js", "specifier": "eslint-plugin-react-hooks" },
+    { "name": "@remotion", "specifier": "@remotion/eslint-plugin" }
+  ],
   "$schema": "./node_modules/@effect/tsgo/oxlint-schema.json",
   "extends": [
     "./node_modules/@effect/tsgo/oxlint-presets/strict.json",
@@ -66,6 +70,35 @@
     }
   ],
   "rules": {
+    "react-hooks-js/static-components": "error",
+    "react-hooks-js/use-memo": "error",
+    "react-hooks-js/preserve-manual-memoization": "error",
+    "react-hooks-js/incompatible-library": "error",
+    "react-hooks-js/immutability": "error",
+    "react-hooks-js/globals": "error",
+    "react-hooks-js/refs": "error",
+    "react-hooks-js/set-state-in-effect": "error",
+    "react-hooks-js/error-boundaries": "error",
+    "react-hooks-js/purity": "error",
+    "react-hooks-js/set-state-in-render": "error",
+    "react-hooks-js/unsupported-syntax": "error",
+    "react-hooks-js/config": "error",
+    "react-hooks-js/gating": "error",
+    "react-hooks-js/component-hook-factories": "error",
+    "@remotion/warn-native-media-tag": "error",
+    "@remotion/deterministic-randomness": "error",
+    "@remotion/no-string-assets": "error",
+    "@remotion/even-dimensions": "error",
+    "@remotion/duration-in-frames": "error",
+    "@remotion/from-0": "error",
+    "@remotion/use-gif-component": "error",
+    "@remotion/staticfile-no-relative": "error",
+    "@remotion/staticfile-no-remote": "error",
+    "@remotion/no-background-image": "error",
+    "@remotion/non-pure-animation": "error",
+    "@remotion/v4-config-import": "error",
+    "@remotion/no-object-fit-on-media-video": "error",
+    "@remotion/valid-composition-and-folder-name": "error",
     "typescript/consistent-return": "error",
     // Consistent returns can require an explicit return undefined.
     "unicorn/no-useless-undefined": "off",
