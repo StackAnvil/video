@@ -1,3 +1,4 @@
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Resolve local paths with the host platform semantics.
 import { resolve } from "node:path";
 
 import { Effect, Option, Schema } from "effect";

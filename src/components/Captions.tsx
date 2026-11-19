@@ -12,7 +12,7 @@ export function Captions({ captions }: { captions: Caption[] }) {
       caption.startMs <= (frame / fps) * 1000 &&
       caption.endMs > (frame / fps) * 1000,
   );
-  if (!current) return null;
+  if (current === undefined) return null;
   return (
     <div
       style={{

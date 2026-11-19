@@ -17,7 +17,7 @@ export function Footage({
 }) {
   const { width, height } = useVideoConfig();
   const vertical = height > width;
-  if (!clip)
+  if (clip === undefined)
     return (
       <AbsoluteFill
         style={{
@@ -35,12 +35,13 @@ export function Footage({
     vertical && framing === "menu" ? (focusOverride ?? clip.focus) : undefined;
   const availableHeight =
     vertical && framing !== "world" ? height - 760 : height;
-  const scale = focus
-    ? Math.min(
-        width / (1280 * focus.width),
-        availableHeight / (720 * focus.height),
-      )
-    : 1;
+  const scale =
+    focus !== undefined
+      ? Math.min(
+          width / (1280 * focus.width),
+          availableHeight / (720 * focus.height),
+        )
+      : 1;
   return (
     <div
       style={{
@@ -55,7 +56,7 @@ export function Footage({
         muted
         objectFit={vertical && framing === "world" ? "cover" : "contain"}
         style={
-          focus
+          focus !== undefined
             ? {
                 position: "absolute",
                 width: 1280 * scale,

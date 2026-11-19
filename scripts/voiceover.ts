@@ -1,3 +1,4 @@
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Resolve local paths with the host platform semantics.
 import { resolve } from "node:path";
 
 import { Effect, Option, Schema } from "effect";
@@ -29,7 +30,7 @@ const Alignment = Schema.Struct({
   character_end_times_seconds: Schema.mutable(Schema.Array(Schema.Finite)),
 });
 /** The parts of the text-to-dialogue response that the production uses. */
-export const Dialogue = Schema.Struct({
+const Dialogue = Schema.Struct({
   audio_base64: Schema.String,
   normalized_alignment: Schema.optional(Schema.NullOr(Alignment)),
   alignment: Schema.optional(Schema.NullOr(Alignment)),
@@ -64,7 +65,8 @@ export const voiceover = Effect.fnUntraced(function* (
   yield* directory("public/media/voiceover");
   yield* directory(".cache/voiceover");
   const selected = [...scenes, ...shortScenes].filter(
-    (scene) => !onlyScene || scene.id === onlyScene,
+    (scene) =>
+      onlyScene === undefined || onlyScene === "" || scene.id === onlyScene,
   );
   if (selected.length === 0) return yield* fail("Unknown narration scene");
   for (const scene of selected) {
@@ -108,7 +110,8 @@ export const voiceover = Effect.fnUntraced(function* (
           ),
         );
     const alignment = result.normalized_alignment ?? result.alignment;
-    if (!alignment) return yield* fail(`Missing alignment for ${scene.id}`);
+    if (alignment == null)
+      return yield* fail(`Missing alignment for ${scene.id}`);
     const spoken = alignment.characters.join("");
     const characters = [...alignment.characters];
     for (const tag of spoken.matchAll(/\[[^\]]+\]/gu))
@@ -117,7 +120,7 @@ export const voiceover = Effect.fnUntraced(function* (
     const captions = yield* Effect.try({
       try: () => alignedCaptions({ ...alignment, characters }),
       catch: (cause) =>
-        new ToolError({
+        ToolError.make({
           message: `Invalid alignment for ${scene.id}: ${reason(cause)}`,
           cause,
         }),

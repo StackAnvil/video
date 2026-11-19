@@ -1,15 +1,15 @@
 import { Config, Duration, Effect, Option, Redacted } from "effect";
+import { HttpClient, HttpClientRequest } from "effect/http";
 
-import { fail, io, ToolError } from "./io";
+import { fail, reason, ToolError } from "./io";
 
 const configuration = <A>(config: Config.Config<A>) =>
   config.pipe(
-    Effect.mapError(
-      (cause) =>
-        new ToolError({
-          message: `Invalid configuration: ${cause.message}`,
-          cause,
-        }),
+    Effect.mapError((cause) =>
+      ToolError.make({
+        message: `Invalid configuration: ${cause.message}`,
+        cause,
+      }),
     ),
   );
 
@@ -44,28 +44,27 @@ export const elevenLabs = Effect.fnUntraced(function* (
   request: ElevenLabsRequest,
 ) {
   const key = yield* apiKey(request.purpose);
-  const response = yield* io(
-    `ElevenLabs ${request.purpose} request`,
-    async (signal) => {
-      const reply = await fetch(
-        `https://api.elevenlabs.io/v1/${request.path}`,
-        {
-          method: "POST",
-          headers: {
-            "xi-api-key": Redacted.value(key),
-            "Content-Type": "application/json",
-          },
-          body: request.body,
-          signal,
-        },
-      );
-      return {
-        status: reply.status,
-        headers: reply.headers,
-        bytes: reply.ok ? await reply.arrayBuffer() : undefined,
-      };
-    },
-  ).pipe(
+  const post = HttpClientRequest.post(
+    `https://api.elevenlabs.io/v1/${request.path}`,
+    { headers: { "xi-api-key": Redacted.value(key) } },
+  ).pipe(HttpClientRequest.bodyText(request.body, "application/json"));
+  const response = yield* Effect.gen(function* () {
+    const reply = yield* HttpClient.execute(post);
+    if (reply.status < 200 || reply.status >= 300)
+      return yield* fail(request.rejected(reply.status));
+    return {
+      headers: new Headers(reply.headers),
+      bytes: yield* reply.arrayBuffer,
+    };
+  }).pipe(
+    Effect.mapError((cause) =>
+      cause instanceof ToolError
+        ? cause
+        : ToolError.make({
+            message: `ElevenLabs ${request.purpose} request: ${reason(cause.cause ?? cause)}`,
+            cause,
+          }),
+    ),
     Effect.timeoutOrElse({
       duration: Duration.seconds(request.timeoutSeconds),
       orElse: () =>
@@ -74,6 +73,5 @@ export const elevenLabs = Effect.fnUntraced(function* (
         ),
     }),
   );
-  if (!response.bytes) return yield* fail(request.rejected(response.status));
-  return { headers: response.headers, bytes: response.bytes };
+  return response;
 });

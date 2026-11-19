@@ -27,7 +27,7 @@ export interface Clip {
   focus?: Focus;
   portraitMenus?: { from: number; to: number; focus: Focus }[];
 }
-export interface Voice {
+interface Voice {
   file: string;
   sha256: string;
   text: string;
@@ -85,7 +85,7 @@ export function chapters(
   let previous = -10;
   const entries = timeline(production, edition).flatMap(({ scene, start }) => {
     const title = publishing[edition].chapters[scene.id];
-    if (!title) return [];
+    if (title === undefined || title === "") return [];
     const seconds = Math.ceil(start / FPS);
     if (seconds - previous < 10 || end - seconds < 10) return [];
     previous = seconds;
@@ -102,7 +102,7 @@ export function readiness(
   for (const scene of scenesFor(edition)) {
     if ("clip" in scene) {
       const clip = production.clips[scene.clip];
-      if (!clip) failures.push(`Missing footage: ${scene.clip}`);
+      if (clip === undefined) failures.push(`Missing footage: ${scene.clip}`);
       else if (!clip.reviewed)
         failures.push(`Unreviewed footage: ${scene.clip}`);
       else if (
@@ -116,10 +116,14 @@ export function readiness(
         failures.push(`Footage too short: ${scene.clip}`);
     }
     const voice = production.voices[scene.id];
-    if (!voice || voice.text !== scene.narration || voice.captions.length === 0)
+    if (
+      voice === undefined ||
+      voice.text !== scene.narration ||
+      voice.captions.length === 0
+    )
       failures.push(`Missing or stale narration/captions: ${scene.id}`);
   }
-  if (!production.music) failures.push("Missing music");
+  if (production.music === undefined) failures.push("Missing music");
   else if (production.music.duration < duration(production, edition) / FPS)
     failures.push("Music too short");
   return failures;

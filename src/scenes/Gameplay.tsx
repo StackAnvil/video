@@ -24,7 +24,7 @@ export function Gameplay({
         (range) => frame / FPS >= range.from && frame / FPS < range.to,
       )
     : undefined;
-  const framing = menu ? "menu" : scene.framing;
+  const framing = menu !== undefined ? "menu" : scene.framing;
   const opacity = interpolate(frame, [8, 20, 100, 118], [0, 1, 1, 0], {
     extrapolateLeft: "clamp",
     extrapolateRight: "clamp",

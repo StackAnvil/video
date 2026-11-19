@@ -28,7 +28,7 @@ export const masterAudio = Effect.fnUntraced(function* (path: string) {
     Promise.all([new Response(analysis.stderr).text(), analysis.exited]),
   );
   const report = stderr.match(/\{[^{}]+\}/u)?.[0];
-  if (code !== 0 || !report)
+  if (code !== 0 || report === undefined)
     return yield* fail("Audio loudness analysis failed");
   const measured = yield* decode(
     Loudness,

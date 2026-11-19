@@ -1,5 +1,6 @@
-import { createHash } from "node:crypto";
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Native filesystem operations are wrapped at the I/O boundary.
 import { mkdir, rename } from "node:fs/promises";
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Resolve local paths with the host platform semantics.
 import { resolve } from "node:path";
 
 import { Effect, Schema } from "effect";
@@ -33,11 +34,11 @@ export const io = <A>(
   Effect.tryPromise({
     try: task,
     catch: (cause) =>
-      new ToolError({ message: `${label}: ${reason(cause)}`, cause }),
+      ToolError.make({ message: `${label}: ${reason(cause)}`, cause }),
   });
 
 export const fail = (message: string) =>
-  Effect.fail(new ToolError({ message }));
+  Effect.fail(ToolError.make({ message }));
 
 /** Runs a script at the edge and reports typed failures without a stack. */
 export const main = (program: Effect.Effect<unknown, ToolError>) =>
@@ -57,9 +58,8 @@ export const decode =
   <S extends Schema.Decoder<unknown>>(schema: S, label: string) =>
   (input: unknown): Effect.Effect<S["Type"], ToolError> =>
     Schema.decodeUnknownEffect(schema)(input).pipe(
-      Effect.mapError(
-        (cause) =>
-          new ToolError({ message: `${label}: ${cause.message}`, cause }),
+      Effect.mapError((cause) =>
+        ToolError.make({ message: `${label}: ${cause.message}`, cause }),
       ),
     );
 
@@ -83,7 +83,7 @@ const Asset = {
   sha256: Schema.String,
   duration: Finite,
 };
-export const ProductionManifest = Schema.Struct({
+const ProductionManifest = Schema.Struct({
   clips: Schema.Record(
     Schema.String,
     Schema.Struct({
@@ -119,7 +119,7 @@ export const decodeProduction = (
   decode(ProductionManifest, "production.local.json is malformed")(input);
 
 export const root = resolve(import.meta.dirname, "..");
-export const manifest = resolve(root, "production.local.json");
+const manifest = resolve(root, "production.local.json");
 
 export const exists = (path: string) =>
   io(`Check ${path}`, () => Bun.file(path).exists());
@@ -144,7 +144,7 @@ export const save = Effect.fnUntraced(function* (production: Production) {
 });
 export const hash = (path: string) =>
   io(`Hash ${path}`, async () =>
-    createHash("sha256")
+    new Bun.CryptoHasher("sha256")
       .update(new Uint8Array(await Bun.file(path).arrayBuffer()))
       .digest("hex"),
   );
@@ -161,7 +161,7 @@ export const spawn = <
     Effect.try({
       try: () => Bun.spawn(command, { cwd: root, ...options }),
       catch: (cause) =>
-        new ToolError({
+        ToolError.make({
           message: `Cannot start ${command[0]}: ${reason(cause)}`,
           cause,
         }),

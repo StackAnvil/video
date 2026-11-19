@@ -1,3 +1,4 @@
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Resolve local paths with the host platform semantics.
 import { resolve, isAbsolute, relative } from "node:path";
 
 import { bundle } from "@remotion/bundler";
@@ -8,6 +9,7 @@ import {
   selectComposition,
 } from "@remotion/renderer";
 import { DateTime, Effect } from "effect";
+import { FetchHttpClient } from "effect/http";
 
 import {
   FPS,
@@ -52,7 +54,7 @@ const verify = Effect.fnUntraced(function* (edition: Edition = "landscape") {
   const assets = [
     ...Object.values(production.clips),
     ...Object.values(production.voices),
-    ...(production.music ? [production.music] : []),
+    ...(production.music !== undefined ? [production.music] : []),
   ];
   for (const asset of assets) {
     const path = resolve(root, "public", asset.file);
@@ -75,11 +77,13 @@ const verify = Effect.fnUntraced(function* (edition: Edition = "landscape") {
 const footage = Effect.fnUntraced(function* (args: string[]) {
   const [id, source, startText, secondsText, ...provenance] = args;
   if (
-    !id ||
+    id === undefined ||
+    id === "" ||
     ![...scenes, ...shortScenes].some(
       (scene) => "clip" in scene && scene.clip === id,
     ) ||
-    !source ||
+    source === undefined ||
+    source === "" ||
     provenance.length === 0
   )
     return yield* fail(
@@ -196,7 +200,7 @@ const thumbnail = Effect.fnUntraced(function* (
   serveUrl?: string,
 ) {
   const clip = production.clips["galaxite-actors"];
-  if (!clip?.reviewed || clip.duration < 3.1)
+  if (clip?.reviewed !== true || clip.duration < 3.1)
     return yield* fail("Thumbnail needs reviewed Galaxite model footage");
   yield* directory("out/review");
   const url = serveUrl ?? (yield* bundleVideo);
@@ -270,7 +274,7 @@ const render = Effect.fnUntraced(function* (
           }),
         );
     }
-    if (production.clips["galaxite-actors"]?.reviewed)
+    if (production.clips["galaxite-actors"]?.reviewed === true)
       yield* thumbnail(production, edition, serveUrl);
     process.stdout.write("Scene and transition frames: out/review\n");
   } else {
@@ -328,7 +332,7 @@ const program = Effect.gen(function* () {
     const [id] = args;
     const production = yield* load();
     const clip = id === undefined ? undefined : production.clips[id];
-    if (!clip) return yield* fail("Unknown clip");
+    if (clip === undefined) return yield* fail("Unknown clip");
     if ((yield* hash(resolve(root, "public", clip.file))) !== clip.sha256)
       return yield* fail("Footage changed since import");
     clip.reviewed = true;
@@ -369,4 +373,5 @@ const program = Effect.gen(function* () {
   );
 }).pipe(Effect.scoped);
 
-await main(program);
+// oxlint-disable-next-line effecttsgo/strict-effect-provide -- This is the production script entry point.
+await main(program.pipe(Effect.provide(FetchHttpClient.layer)));

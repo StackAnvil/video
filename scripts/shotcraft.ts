@@ -1,4 +1,6 @@
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Native filesystem operations are wrapped at the I/O boundary.
 import { mkdir } from "node:fs/promises";
+// oxlint-disable-next-line effecttsgo/node-builtin-import -- Resolve local paths with the host platform semantics.
 import { resolve } from "node:path";
 
 import {
@@ -19,7 +21,10 @@ const program = Effect.gen(function* () {
   const [command, edition] = process.argv.slice(2);
   if (
     (command !== "inspect" && command !== "render") ||
-    (edition && edition !== "landscape" && edition !== "vertical")
+    (edition !== undefined &&
+      edition !== "" &&
+      edition !== "landscape" &&
+      edition !== "vertical")
   )
     return yield* fail(
       "Usage: bun scripts/shotcraft.ts <inspect|render> [landscape|vertical]",
@@ -64,7 +69,8 @@ const program = Effect.gen(function* () {
   );
   for (const id of ids) {
     const composition = compositions.find((item) => item.id === id);
-    if (!composition) return yield* fail(`Missing composition: ${id}`);
+    if (composition === undefined)
+      return yield* fail(`Missing composition: ${id}`);
     if (command === "inspect") {
       const directory = resolve(output, "qa");
       yield* io(`Create ${directory}`, () =>

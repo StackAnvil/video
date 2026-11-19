@@ -74,7 +74,7 @@ export function Showcase({ production, captions, draft, edition }: VideoProps) {
           volume={(f) => {
             const duck = entries.reduce((gain, { scene, start }) => {
               const voice = production.voices[scene.id];
-              if (!voice) return gain;
+              if (voice === undefined) return gain;
               const from = start + VOICE_DELAY;
               const end = from + voice.duration * FPS;
               return Math.min(

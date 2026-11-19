@@ -21,7 +21,7 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
   const flush = () => {
     const first = line[0];
     const last = line.at(-1);
-    if (!first || !last) return;
+    if (first === undefined || last === undefined) return;
     const start = required(first.index, "caption word position");
     const end =
       required(last.index, "caption word position") + last[0].length - 1;
@@ -56,7 +56,7 @@ export function alignedCaptions(alignment: Alignment): Caption[] {
   flush();
   return captions;
 }
-export function timestamp(ms: number, separator = ",") {
+function timestamp(ms: number, separator = ",") {
   const rounded = Math.round(ms);
   return `${String(Math.floor(rounded / 3_600_000)).padStart(2, "0")}:${String(Math.floor(rounded / 60_000) % 60).padStart(2, "0")}:${String(Math.floor(rounded / 1000) % 60).padStart(2, "0")}${separator}${String(rounded % 1000).padStart(3, "0")}`;
 }
