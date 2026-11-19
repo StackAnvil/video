@@ -39,6 +39,7 @@ export interface Production {
   voices: Record<string, Voice>;
   music?: { file: string; sha256: string; duration: number; license: string };
 }
+// oxlint-disable-next-line typescript/consistent-type-definitions -- Remotion composition props must be assignable to Record<string, unknown>, which an interface is not
 export type VideoProps = {
   production: Production;
   captions: boolean;

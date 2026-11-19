@@ -5,6 +5,7 @@ import { brand } from "./brand";
 import { BrandMark } from "./components/BrandMark";
 import type { Production } from "./production";
 
+// oxlint-disable-next-line typescript/consistent-type-definitions -- Remotion still props must be assignable to Record<string, unknown>, which an interface is not
 export type ThumbnailProps = { production: Production };
 
 export function Thumbnail({ production }: ThumbnailProps) {
